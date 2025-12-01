@@ -58,6 +58,7 @@ Project imported and configured for Replit on December 01, 2025
 
 ## Configuration Notes
 - Vite is configured to bind to 0.0.0.0:5000 for Replit's proxy
+- `allowedHosts: true` is set to allow Replit's proxy hosts
 - HMR (Hot Module Replacement) is configured for the Replit environment
 - The app uses Supabase for authentication and data storage
 - All dependencies are managed via npm
