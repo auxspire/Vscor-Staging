@@ -182,29 +182,29 @@ const MatchCard: React.FC<MatchCardProps> = ({ match, onClick }) => {
       onClick={onClick}
       className="w-full bg-white rounded-3xl border border-slate-200 p-5 flex items-center gap-4 transition-all active:scale-[0.98] hover:border-purple-200 hover:shadow-lg shadow-sm"
     >
-      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-base font-bold ${
+      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-base font-bold flex-shrink-0 ${
         isLive ? "bg-green-100 text-green-700" : "bg-purple-100 text-purple-700"
       }`}>
         {match.teamA.charAt(0)}
       </div>
       
-      <div className="flex-1 text-left">
-        <p className="text-base font-bold text-slate-900 mb-1">
+      <div className="flex-1 text-left min-w-0">
+        <p className="text-base font-bold text-slate-900 mb-1 truncate">
           {match.teamA} vs {match.teamB}
         </p>
         <div className="flex items-center gap-2">
-          <span className="text-sm text-slate-500">
-            {match.tournamentName || "Friendly"}
+          <span className="text-sm text-slate-500 truncate">
+            {match.tournamentName || "Match"}
           </span>
           {isLive && (
-            <span className="px-2.5 py-1 text-xs font-bold bg-green-100 text-green-700 rounded-full animate-pulse">
+            <span className="px-2.5 py-0.5 text-xs font-bold bg-green-100 text-green-700 rounded-full animate-pulse flex-shrink-0">
               LIVE
             </span>
           )}
         </div>
       </div>
       
-      <div className="text-right">
+      <div className="text-right flex-shrink-0">
         <p className="text-2xl font-bold text-slate-900 mb-1">
           {match.scoreA} - {match.scoreB}
         </p>

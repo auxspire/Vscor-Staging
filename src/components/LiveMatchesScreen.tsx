@@ -270,25 +270,26 @@ const LiveMatchCard: React.FC<LiveMatchCardProps> = ({ match, onClick }) => {
           </div>
         </div>
 
-        {(match.tournament || match.venue) && (
-          <div className="flex items-center justify-between pt-4 mt-4 border-t border-slate-100">
-            <div className="flex items-center gap-4 text-sm text-slate-500">
-              {match.tournament && (
-                <span className="flex items-center gap-2">
-                  <Trophy className="w-4 h-4" />
-                  <span className="font-medium">{match.tournament}</span>
-                </span>
-              )}
-              {match.venue && (
-                <span className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4" />
-                  <span>{match.venue}</span>
-                </span>
-              )}
-            </div>
-            <ChevronRight className="w-5 h-5 text-slate-400" />
+        <div className="flex items-center justify-between pt-4 mt-4 border-t border-slate-100">
+          <div className="flex items-center gap-4 text-sm text-slate-500 flex-1 min-w-0">
+            {match.tournament && (
+              <span className="flex items-center gap-2 min-w-0">
+                <Trophy className="w-4 h-4 flex-shrink-0 text-purple-500" />
+                <span className="font-medium truncate">{match.tournament}</span>
+              </span>
+            )}
+            {match.venue && (
+              <span className="flex items-center gap-2 min-w-0">
+                <MapPin className="w-4 h-4 flex-shrink-0 text-slate-400" />
+                <span className="truncate">{match.venue}</span>
+              </span>
+            )}
+            {!match.tournament && !match.venue && (
+              <span className="text-slate-400">Tap to view details</span>
+            )}
           </div>
-        )}
+          <ChevronRight className="w-5 h-5 text-slate-400 flex-shrink-0 ml-3" />
+        </div>
       </div>
     </button>
   );

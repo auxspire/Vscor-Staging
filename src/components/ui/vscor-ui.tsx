@@ -122,40 +122,33 @@ export const VSMatchCard: React.FC<VSMatchCardProps> = ({
     <button
       type="button"
       onClick={onClick}
-      className="w-full text-left rounded-3xl bg-white border border-slate-200 shadow-sm px-5 py-4 flex items-stretch gap-4 active:scale-[0.98] transition-all cursor-pointer hover:border-purple-200 hover:shadow-lg"
+      className="w-full text-left rounded-3xl bg-white border border-slate-200 shadow-sm px-5 py-4 flex items-center gap-4 active:scale-[0.98] transition-all cursor-pointer hover:border-purple-200 hover:shadow-lg"
     >
-      <div className="flex-1 flex flex-col gap-3">
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex flex-col">
-            <p className="text-sm text-slate-500 font-medium">
-              {tournamentName || "Match"}
-            </p>
-            {metaLine && (
-              <p className="text-xs text-slate-400 mt-0.5">{metaLine}</p>
-            )}
-          </div>
-          {statusLabel && <VSPill tone={statusTone}>{statusLabel}</VSPill>}
-        </div>
-
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-slate-100 text-sm font-bold text-slate-700 flex items-center justify-center">
-            {teamA.charAt(0).toUpperCase()}
-          </div>
-          <div>
-            <p className="text-base font-bold text-slate-900 leading-snug">
-              {teamA}
-            </p>
-            <p className="text-sm text-slate-500">vs {teamB}</p>
-          </div>
-        </div>
+      <div className="w-12 h-12 rounded-2xl bg-slate-100 text-base font-bold text-slate-700 flex items-center justify-center flex-shrink-0">
+        {teamA.charAt(0).toUpperCase()}
       </div>
 
-      <div className="flex flex-col items-center justify-center min-w-[80px] px-3 bg-slate-50 rounded-2xl">
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 mb-1">
+          <p className="text-sm text-slate-500 font-medium truncate">
+            {tournamentName || "Match"}
+          </p>
+          {statusLabel && <VSPill tone={statusTone}>{statusLabel}</VSPill>}
+        </div>
+        <p className="text-base font-bold text-slate-900 leading-snug truncate">
+          {teamA} vs {teamB}
+        </p>
+        {metaLine && (
+          <p className="text-xs text-slate-400 mt-0.5 truncate">{metaLine}</p>
+        )}
+      </div>
+
+      <div className="flex flex-col items-center justify-center min-w-[80px] px-3 py-3 bg-slate-50 rounded-2xl flex-shrink-0">
         <div className="text-2xl font-bold text-slate-900 leading-none">
           {scoreA} - {scoreB}
         </div>
         {rightSlot ? (
-          <div className="mt-2">{rightSlot}</div>
+          <div className="mt-1">{rightSlot}</div>
         ) : (
           <div className="text-xs text-slate-500 mt-1 uppercase font-semibold">
             {statusTone === "live" ? "LIVE" : statusTone === "upcoming" ? "UPCOMING" : "FINAL"}
