@@ -82,6 +82,13 @@ Project imported and configured for Replit on December 01, 2025
 - Card-based patterns with 16-20px radii and subtle shadows
 - Proper accessibility: button elements for clickable items, role="button" for interactive divs
 
+### Recent UI Fixes (December 01, 2025)
+- **Home tab icon**: Uses Goal icon with solid purple background (`bg-purple-600 text-white`)
+- **Quick Actions**: Uniform light purple cards (`bg-purple-100`) with circular purple icon containers
+- **Home match cards**: Score/status column uses `ml-auto min-w-[90px]` with `whitespace-nowrap` for consistent alignment
+- **Live match cards**: 3-column grid layout (`grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]`) for symmetric home-left/score-center/away-right presentation
+- **Ad-hoc filtering**: Live tab filters out matches with "ad hoc" in tournament name, badge counts match filtered list
+
 ## Configuration Notes
 - Vite is configured to bind to 0.0.0.0:5000 for Replit's proxy
 - `allowedHosts: true` is set to allow Replit's proxy hosts
