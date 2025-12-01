@@ -10,3 +10,40 @@ channel = "stable-25_05"
 [userenv.shared]
 VITE_SUPABASE_URL = "https://xefwlnjaotbegmgskkdm.supabase.co"
 VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlZndsbmphb3RiZWdtZ3Nra2RtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwODI5NzAsImV4cCI6MjA3OTY1ODk3MH0.RTqMesckPpIz-1pXCdVDNLX3KDlPAQPbF7tLOd49UKs"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "VScor App"
+
+[[workflows.workflow]]
+name = "VScor App"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[[ports]]
+localPort = 38247
+externalPort = 3000
+
+[deployment]
+deploymentTarget = "static"
+build = ["npm", "run", "build"]
+publicDir = "build"
