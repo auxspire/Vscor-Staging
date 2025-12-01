@@ -244,37 +244,33 @@ const LiveMatchCard: React.FC<LiveMatchCardProps> = ({ match, onClick }) => {
       )}
 
       <div className="p-5">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-50 border border-slate-200 flex items-center justify-center text-lg font-bold text-slate-700 flex-shrink-0">
-                {match.teamA.charAt(0)}
-              </div>
-              <div className="text-left min-w-0">
-                <p className="text-base font-bold text-slate-900 truncate">{match.teamA}</p>
-                <p className="text-sm text-slate-500">Home</p>
-              </div>
+        <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3">
+          <div className="flex items-center gap-3 text-left">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-50 border border-slate-200 flex items-center justify-center text-base font-bold text-slate-700 flex-shrink-0">
+              {match.teamA.charAt(0)}
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-bold text-slate-900 truncate">{match.teamA}</p>
+              <p className="text-xs text-slate-500">Home</p>
             </div>
           </div>
 
-          <div className="px-5 py-3 bg-slate-50 rounded-2xl text-center flex-shrink-0 min-w-[100px]">
-            <p className="text-2xl font-bold text-slate-900">
+          <div className="px-4 py-2 bg-slate-50 rounded-xl text-center flex-shrink-0">
+            <p className="text-xl font-bold text-slate-900 whitespace-nowrap">
               {match.scoreA} - {match.scoreB}
             </p>
             {!isLive && (
-              <p className="text-xs uppercase text-slate-500 font-semibold mt-1">{match.status === "finished" ? "Full Time" : match.status}</p>
+              <p className="text-[10px] uppercase text-slate-500 font-semibold mt-0.5">{match.status === "finished" ? "Full Time" : match.status}</p>
             )}
           </div>
 
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-4 justify-end">
-              <div className="text-right min-w-0">
-                <p className="text-base font-bold text-slate-900 truncate">{match.teamB}</p>
-                <p className="text-sm text-slate-500">Away</p>
-              </div>
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-50 border border-slate-200 flex items-center justify-center text-lg font-bold text-slate-700 flex-shrink-0">
-                {match.teamB.charAt(0)}
-              </div>
+          <div className="flex items-center gap-3 justify-end text-right">
+            <div className="min-w-0">
+              <p className="text-sm font-bold text-slate-900 truncate">{match.teamB}</p>
+              <p className="text-xs text-slate-500">Away</p>
+            </div>
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-50 border border-slate-200 flex items-center justify-center text-base font-bold text-slate-700 flex-shrink-0">
+              {match.teamB.charAt(0)}
             </div>
           </div>
         </div>

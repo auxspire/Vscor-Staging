@@ -131,10 +131,10 @@ const QuickActionTile: React.FC<QuickActionTileProps> = ({
   return (
     <button
       onClick={onClick}
-      className="bg-purple-100 rounded-2xl p-5 aspect-square flex flex-col items-center justify-center gap-3 transition-all active:scale-[0.97] hover:bg-purple-150 hover:shadow-md"
+      className="bg-purple-100 rounded-2xl p-5 aspect-square flex flex-col items-center justify-center gap-3 transition-all active:scale-[0.97] hover:bg-purple-200 hover:shadow-md"
     >
       <div className="w-12 h-12 rounded-full bg-purple-200 flex items-center justify-center text-purple-700">
-        <Icon className="w-6 h-6" strokeWidth={2.5} />
+        <Icon className="w-6 h-6" />
       </div>
       <span className="text-sm font-bold text-purple-900">{title}</span>
     </button>
@@ -176,12 +176,12 @@ const MatchCard: React.FC<MatchCardProps> = ({ match, onClick }) => {
         </div>
       </div>
       
-      <div className="text-right flex-shrink-0">
-        <p className="text-2xl font-bold text-slate-900 mb-1">
+      <div className="ml-auto flex flex-col items-end min-w-[90px] flex-shrink-0">
+        <p className="text-2xl font-bold text-slate-900">
           {match.scoreA} - {match.scoreB}
         </p>
-        <div className="flex items-center gap-1.5 text-sm text-slate-400 justify-end">
-          <Clock className="w-3.5 h-3.5" />
+        <div className="flex items-center gap-1.5 text-sm text-slate-400 whitespace-nowrap">
+          <Clock className="w-3.5 h-3.5 flex-shrink-0" />
           <span>{match.status || "Final"}</span>
         </div>
       </div>

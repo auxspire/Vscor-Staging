@@ -121,12 +121,6 @@ type TabButtonProps = {
 };
 
 const TabButton: React.FC<TabButtonProps> = ({ icon: Icon, label, isActive, onClick, isPrimary }) => {
-  const iconColorClass = isPrimary 
-    ? "text-white" 
-    : isActive 
-      ? "text-purple-600" 
-      : "text-slate-400";
-
   return (
     <button
       onClick={onClick}
@@ -134,16 +128,14 @@ const TabButton: React.FC<TabButtonProps> = ({ icon: Icon, label, isActive, onCl
         isActive ? "text-purple-600" : "text-slate-400"
       }`}
     >
-      <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${iconColorClass} ${
-        isPrimary && isActive 
-          ? "bg-gradient-to-br from-purple-600 to-purple-700 shadow-lg shadow-purple-500/30" 
-          : isPrimary 
-            ? "bg-gradient-to-br from-purple-500 to-purple-600 shadow-md shadow-purple-400/20"
-            : isActive 
-              ? "bg-purple-50" 
-              : ""
+      <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+        isPrimary 
+          ? "bg-purple-600 text-white shadow-md shadow-purple-500/30" 
+          : isActive 
+            ? "bg-purple-50 text-purple-600" 
+            : "text-slate-400"
       }`}>
-        <Icon className="w-5 h-5" strokeWidth={2.5} />
+        <Icon className="w-5 h-5" />
       </div>
       <span className="text-[10px] font-semibold">{label}</span>
     </button>
