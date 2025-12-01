@@ -227,75 +227,73 @@ type LiveMatchCardProps = {
   onClick: () => void;
 };
 
+const formatStatus = (status: string): string => {
+  if (status === "finished") return "FT";
+  if (status === "live") return "Live";
+  if (status === "upcoming") return "Upcoming";
+  return status.charAt(0).toUpperCase() + status.slice(1);
+};
+
 const LiveMatchCard: React.FC<LiveMatchCardProps> = ({ match, onClick }) => {
   const isLive = match.status === "live";
+  const isFinished = match.status === "finished";
 
   return (
     <button
       onClick={onClick}
-      className="w-full bg-white rounded-3xl border border-slate-200 overflow-hidden transition-all active:scale-[0.98] hover:border-purple-200 hover:shadow-xl shadow-sm"
+      className="w-full bg-white rounded-xl border border-slate-200 p-3 transition-all active:scale-[0.99] hover:border-purple-200 hover:shadow-md shadow-sm"
     >
-      {isLive && (
-        <div className="bg-gradient-to-r from-red-500 to-rose-500 px-5 py-2.5 flex items-center gap-3">
-          <span className="w-2.5 h-2.5 rounded-full bg-white animate-pulse" />
-          <span className="text-sm font-bold text-white uppercase tracking-wide">Live Now</span>
-          {match.time && <span className="text-sm text-white/80 ml-auto font-medium">{match.time}</span>}
+      <div className="flex items-center gap-3">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="w-5 h-5 rounded bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-600 flex-shrink-0">
+              {match.teamA.charAt(0)}
+            </span>
+            <span className="text-sm font-medium text-slate-900 truncate">{match.teamA}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="w-5 h-5 rounded bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-600 flex-shrink-0">
+              {match.teamB.charAt(0)}
+            </span>
+            <span className="text-sm font-medium text-slate-900 truncate">{match.teamB}</span>
+          </div>
+        </div>
+
+        <div className="flex flex-col items-end gap-1.5 flex-shrink-0 min-w-[40px]">
+          <span className={`text-sm font-bold ${isLive ? "text-green-600" : "text-slate-900"}`}>
+            {match.scoreA}
+          </span>
+          <span className={`text-sm font-bold ${isLive ? "text-green-600" : "text-slate-900"}`}>
+            {match.scoreB}
+          </span>
+        </div>
+
+        <div className="flex flex-col items-center gap-1 flex-shrink-0 min-w-[60px]">
+          {isLive ? (
+            <>
+              <span className="px-2 py-0.5 text-[10px] font-bold bg-red-500 text-white rounded animate-pulse">
+                LIVE
+              </span>
+              {match.time && (
+                <span className="text-[10px] text-slate-500">{match.time}</span>
+              )}
+            </>
+          ) : (
+            <span className={`text-xs font-medium ${isFinished ? "text-slate-500" : "text-blue-600"}`}>
+              {formatStatus(match.status)}
+            </span>
+          )}
+        </div>
+
+        <ChevronRight className="w-4 h-4 text-slate-300 flex-shrink-0" />
+      </div>
+
+      {match.tournament && (
+        <div className="flex items-center gap-1.5 mt-2 pt-2 border-t border-slate-100">
+          <Trophy className="w-3 h-3 text-purple-500 flex-shrink-0" />
+          <span className="text-xs text-slate-500 truncate">{match.tournament}</span>
         </div>
       )}
-
-      <div className="p-4">
-        <div className="flex items-center">
-          <div className="flex items-center gap-2 flex-1 min-w-0">
-            <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-sm font-bold text-slate-700 flex-shrink-0">
-              {match.teamA.charAt(0)}
-            </div>
-            <div className="min-w-0">
-              <p className="text-sm font-bold text-slate-900 truncate">{match.teamA}</p>
-              <p className="text-xs text-slate-400">Home</p>
-            </div>
-          </div>
-
-          <div className="px-3 py-1.5 bg-slate-50 rounded-lg text-center mx-2 flex-shrink-0">
-            <p className="text-lg font-bold text-slate-900 whitespace-nowrap">
-              {match.scoreA} - {match.scoreB}
-            </p>
-            {!isLive && (
-              <p className="text-[10px] uppercase text-slate-500 font-medium">{match.status === "finished" ? "Full Time" : match.status}</p>
-            )}
-          </div>
-
-          <div className="flex items-center gap-2 flex-1 min-w-0 justify-end">
-            <div className="min-w-0 text-right">
-              <p className="text-sm font-bold text-slate-900 truncate">{match.teamB}</p>
-              <p className="text-xs text-slate-400">Away</p>
-            </div>
-            <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-sm font-bold text-slate-700 flex-shrink-0">
-              {match.teamB.charAt(0)}
-            </div>
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between pt-4 mt-4 border-t border-slate-100">
-          <div className="flex items-center gap-4 text-sm text-slate-500 flex-1 min-w-0">
-            {match.tournament && (
-              <span className="flex items-center gap-2 min-w-0">
-                <Trophy className="w-4 h-4 flex-shrink-0 text-purple-500" />
-                <span className="font-medium truncate">{match.tournament}</span>
-              </span>
-            )}
-            {match.venue && (
-              <span className="flex items-center gap-2 min-w-0">
-                <MapPin className="w-4 h-4 flex-shrink-0 text-slate-400" />
-                <span className="truncate">{match.venue}</span>
-              </span>
-            )}
-            {!match.tournament && !match.venue && (
-              <span className="text-slate-400">Tap to view details</span>
-            )}
-          </div>
-          <ChevronRight className="w-5 h-5 text-slate-400 flex-shrink-0 ml-3" />
-        </div>
-      </div>
     </button>
   );
 };

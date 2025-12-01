@@ -257,30 +257,30 @@ const MatchEventsScreen: React.FC<MatchEventsScreenProps> = ({
         teamB: match.teamB || match.team2 || 'Team B',
         scoreA: match.scoreA !== undefined ? match.scoreA : 0,
         scoreB: match.scoreB !== undefined ? match.scoreB : 0,
-        tournament: match.tournament || 'Tournament',
+        tournament: match.tournament || '',
         status: (match.status as MatchStatus | undefined) ?? 'finished',
-        venue: match.venue || 'Match Venue',
+        venue: match.venue || '',
         time: match.time || '',
-        referee: match.referee || 'Referee',
+        referee: match.referee || '',
         kickoffTime: match.kickoffTime || '',
-        matchday: match.matchday || 1,
+        matchday: match.matchday || 0,
         weather: match.weather || '',
       }
     : {
-        id: 1,
-        teamA: 'Manchester United',
-        teamB: 'Arsenal FC',
-        scoreA: 2,
-        scoreB: 1,
-        tournament: 'Premier League',
-        time: "Live: 67'",
-        status: 'live',
-        venue: 'Old Trafford',
-        attendance: 74310,
-        referee: 'Michael Oliver',
-        kickoffTime: '15:00',
-        matchday: 28,
-        weather: 'Clear, 18°C',
+        id: 0,
+        teamA: 'Team A',
+        teamB: 'Team B',
+        scoreA: 0,
+        scoreB: 0,
+        tournament: '',
+        time: '',
+        status: 'scheduled' as MatchStatus,
+        venue: '',
+        attendance: 0,
+        referee: '',
+        kickoffTime: '',
+        matchday: 0,
+        weather: '',
       };
 
   // 🔐 force these to be non-undefined strings everywhere below
@@ -288,66 +288,21 @@ const MatchEventsScreen: React.FC<MatchEventsScreenProps> = ({
   const teamBName = String(matchData.teamB || 'Team B');
   const tournamentName = String(matchData.tournament || 'Tournament');
 
-  // --- Fallback static stats (used when no usable events) ---
-  const fallbackStats: Record<string, TeamStats> = {
-    'Manchester United': {
-      possession: 58,
-      shots: 12,
-      shotsOnTarget: 6,
-      corners: 7,
-      fouls: 8,
-      yellowCards: 1,
-      redCards: 0,
-      passes: 456,
-      passAccuracy: 84,
-    },
-    'Arsenal FC': {
-      possession: 42,
-      shots: 8,
-      shotsOnTarget: 4,
-      corners: 3,
-      fouls: 12,
-      yellowCards: 1,
-      redCards: 0,
-      passes: 332,
-      passAccuracy: 81,
-    },
+  // Empty stats template (no dummy data)
+  const emptyStats: TeamStats = {
+    possession: 0,
+    shots: 0,
+    shotsOnTarget: 0,
+    corners: 0,
+    fouls: 0,
+    yellowCards: 0,
+    redCards: 0,
+    passes: 0,
+    passAccuracy: 0,
   };
 
-  const teamLineups: Record<string, TeamLineup> = {
-    'Manchester United': {
-      formation: '4-2-3-1',
-      players: [
-        { name: 'André Onana', position: 'GK', number: 24 },
-        { name: 'Diogo Dalot', position: 'RB', number: 20 },
-        { name: 'Raphael Varane', position: 'CB', number: 19 },
-        { name: 'Lisandro Martínez', position: 'CB', number: 6 },
-        { name: 'Luke Shaw', position: 'LB', number: 23 },
-        { name: 'Casemiro', position: 'CDM', number: 18 },
-        { name: 'Bruno Fernandes', position: 'CAM', number: 8 },
-        { name: 'Antony', position: 'RW', number: 21 },
-        { name: 'Marcus Rashford', position: 'LW', number: 10 },
-        { name: 'Jadon Sancho', position: 'AM', number: 25 },
-        { name: 'Anthony Martial', position: 'ST', number: 9 },
-      ],
-    },
-    'Arsenal FC': {
-      formation: '4-3-3',
-      players: [
-        { name: 'Aaron Ramsdale', position: 'GK', number: 1 },
-        { name: 'Ben White', position: 'RB', number: 4 },
-        { name: 'William Saliba', position: 'CB', number: 12 },
-        { name: 'Gabriel Magalhães', position: 'CB', number: 6 },
-        { name: 'Oleksandr Zinchenko', position: 'LB', number: 35 },
-        { name: 'Thomas Partey', position: 'CDM', number: 5 },
-        { name: 'Granit Xhaka', position: 'CM', number: 34 },
-        { name: 'Martin Ødegaard', position: 'CAM', number: 8 },
-        { name: 'Bukayo Saka', position: 'RW', number: 7 },
-        { name: 'Gabriel Jesus', position: 'ST', number: 9 },
-        { name: 'Gabriel Martinelli', position: 'LW', number: 11 },
-      ],
-    },
-  };
+  // Empty lineups (no dummy data)
+  const teamLineups: Record<string, TeamLineup> = {};
 
   const handlePlayerNameClick = (playerName: string, teamName: string) => {
     const player = teamLineups[teamName]?.players.find(
@@ -358,8 +313,8 @@ const MatchEventsScreen: React.FC<MatchEventsScreenProps> = ({
         id: player.number,
         name: player.name,
         team: teamName,
-        goals: playerName === 'Marcus Rashford' ? 18 : Math.floor(Math.random() * 15),
-        assists: Math.floor(Math.random() * 12),
+        goals: 0,
+        assists: 0,
       });
     }
   };
@@ -404,94 +359,7 @@ const MatchEventsScreen: React.FC<MatchEventsScreenProps> = ({
             redCard: event.redCard,
           };
         })
-      : [
-          {
-            id: 1,
-            minute: 67,
-            type: 'goal',
-            team: 'Manchester United',
-            player: 'Marcus Rashford',
-            assistedBy: 'Bruno Fernandes',
-            description:
-              'Right footed shot from the centre of the box to the bottom left corner.',
-            icon: Target,
-            color: 'text-green-600 bg-green-100',
-          },
-          {
-            id: 2,
-            minute: 58,
-            type: 'substitution',
-            team: 'Arsenal FC',
-            playerOut: 'Bukayo Saka',
-            playerIn: 'Gabriel Martinelli',
-            description: 'Tactical substitution',
-            icon: RotateCcw,
-            color: 'text-blue-600 bg-blue-100',
-          },
-          {
-            id: 3,
-            minute: 52,
-            type: 'yellow_card',
-            team: 'Manchester United',
-            player: 'Casemiro',
-            description: 'Unsporting behaviour - simulation',
-            icon: AlertTriangle,
-            color: 'text-yellow-600 bg-yellow-100',
-          },
-          {
-            id: 4,
-            minute: 45,
-            type: 'goal',
-            team: 'Arsenal FC',
-            player: 'Gabriel Jesus',
-            assistedBy: 'Martin Ødegaard',
-            description:
-              'Left footed shot from very close range to the centre of the goal.',
-            icon: Target,
-            color: 'text-green-600 bg-green-100',
-          },
-          {
-            id: 5,
-            minute: 34,
-            type: 'goal',
-            team: 'Manchester United',
-            player: 'Antony',
-            assistedBy: 'Luke Shaw',
-            description:
-              'Right footed shot from the right side of the six yard box to the top right corner.',
-            icon: Target,
-            color: 'text-green-600 bg-green-100',
-          },
-          {
-            id: 6,
-            minute: 23,
-            type: 'yellow_card',
-            team: 'Arsenal FC',
-            player: 'Thomas Partey',
-            description: 'Unsporting behaviour - holding opponent',
-            icon: AlertTriangle,
-            color: 'text-yellow-600 bg-yellow-100',
-          },
-          {
-            id: 7,
-            minute: 12,
-            type: 'corner',
-            team: 'Manchester United',
-            player: 'Bruno Fernandes',
-            description: 'Corner kick from the right side',
-            icon: Timer,
-            color: 'text-gray-600 bg-gray-100',
-          },
-          {
-            id: 8,
-            minute: 1,
-            type: 'kickoff',
-            team: null,
-            description: 'Match started',
-            icon: Clock,
-            color: 'text-purple-600 bg-purple-100',
-          },
-        ];
+      : [];
 
   const matchEvents: TimelineEvent[] =
     dbEvents.length > 0 ? dbEvents.map(mapDbEventToUiEvent) : fallbackEvents;
@@ -500,9 +368,12 @@ const MatchEventsScreen: React.FC<MatchEventsScreenProps> = ({
 
   // --- Derive statistics from events (shots, fouls, cards, corners, etc.) ---
   const matchStats: Record<string, TeamStats> = React.useMemo(() => {
-    // If we have no events with a team, just use the static fallback
+    // If we have no events with a team, return empty stats for both teams
     if (!matchEvents.length || !matchEvents.some((ev) => ev.team)) {
-      return fallbackStats;
+      return {
+        [teamAName]: { ...emptyStats },
+        [teamBName]: { ...emptyStats },
+      };
     }
 
     const stats: Record<string, TeamStats> = {};
@@ -566,7 +437,7 @@ const MatchEventsScreen: React.FC<MatchEventsScreenProps> = ({
     }
 
     return stats;
-  }, [matchEvents, fallbackStats]);
+  }, [matchEvents, teamAName, teamBName, emptyStats]);
 
   const getScoreAtTime = (minute: number): string => {
     let teamAScore = 0;
@@ -887,36 +758,47 @@ const MatchEventsScreen: React.FC<MatchEventsScreenProps> = ({
 
         <TabsContent value="lineups" className="space-y-4">
           {/* Team Lineups */}
-          {Object.entries(teamLineups).map(([teamName, lineup]) => (
-            <Card key={teamName}>
-              <CardHeader>
-                <CardTitle>
-                  {teamName} ({lineup.formation})
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-2">
-                  {lineup.players.map((player) => (
-                    <button
-                      key={player.number}
-                      onClick={() => handlePlayerNameClick(player.name, teamName)}
-                      className="flex items-center gap-3 p-2 hover:bg-purple-50 rounded-lg transition-colors text-left"
-                    >
-                      <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                        <span className="text-sm font-medium text-purple-600">
-                          {player.number}
-                        </span>
-                      </div>
-                      <div>
-                        <p className="font-medium text-sm">{player.name}</p>
-                        <p className="text-xs text-gray-600">{player.position}</p>
-                      </div>
-                    </button>
-                  ))}
+          {Object.keys(teamLineups).length > 0 ? (
+            Object.entries(teamLineups).map(([teamName, lineup]) => (
+              <Card key={teamName}>
+                <CardHeader>
+                  <CardTitle>
+                    {teamName} ({lineup.formation})
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-2">
+                    {lineup.players.map((player) => (
+                      <button
+                        key={player.number}
+                        onClick={() => handlePlayerNameClick(player.name, teamName)}
+                        className="flex items-center gap-3 p-2 hover:bg-purple-50 rounded-lg transition-colors text-left"
+                      >
+                        <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                          <span className="text-sm font-medium text-purple-600">
+                            {player.number}
+                          </span>
+                        </div>
+                        <div>
+                          <p className="font-medium text-sm">{player.name}</p>
+                          <p className="text-xs text-gray-600">{player.position}</p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <Card>
+              <CardContent className="py-8">
+                <div className="text-center text-gray-500">
+                  <Users className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                  <p className="text-sm">Lineup information not available for this match.</p>
                 </div>
               </CardContent>
             </Card>
-          ))}
+          )}
         </TabsContent>
       </Tabs>
     </div>

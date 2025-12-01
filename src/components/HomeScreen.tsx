@@ -146,6 +146,16 @@ type MatchCardProps = {
   onClick?: () => void;
 };
 
+const formatMatchStatus = (status: string | undefined): string => {
+  if (!status) return "Final";
+  const s = status.toLowerCase();
+  if (s === "finished" || s === "ft") return "Final";
+  if (s === "live") return "Live";
+  if (s === "upcoming") return "Upcoming";
+  if (s === "scheduled") return "Scheduled";
+  return status.charAt(0).toUpperCase() + status.slice(1);
+};
+
 const MatchCard: React.FC<MatchCardProps> = ({ match, onClick }) => {
   const isLive = match.status?.toLowerCase().includes("live");
   
@@ -176,13 +186,13 @@ const MatchCard: React.FC<MatchCardProps> = ({ match, onClick }) => {
         </div>
       </div>
       
-      <div className="flex flex-col items-end flex-shrink-0">
+      <div className="flex flex-col items-end flex-shrink-0 min-w-[80px]">
         <p className="text-xl font-bold text-slate-900 whitespace-nowrap">
           {match.scoreA} - {match.scoreB}
         </p>
-        <div className="flex items-center gap-1 text-xs text-slate-400 whitespace-nowrap mt-0.5">
+        <div className="h-4 flex items-center gap-1 text-xs text-slate-400 whitespace-nowrap">
           <Clock className="w-3 h-3 flex-shrink-0" />
-          <span>{match.status || "Final"}</span>
+          <span className="w-[52px] text-right">{formatMatchStatus(match.status)}</span>
         </div>
       </div>
     </button>
