@@ -88,13 +88,15 @@ const StatsTab: React.FC<StatsTabProps> = ({
     mappedTopTeams.length > 0;
 
   return (
-    <div className="px-4 py-5 space-y-6">
-      <div>
-        <div className="flex items-center gap-2 mb-1">
-          <BarChart3 className="w-4 h-4 text-purple-500" />
-          <span className="text-xs font-medium text-purple-600 uppercase tracking-wide">Statistics</span>
+    <div className="px-5 py-6 space-y-6">
+      <div className="flex items-center gap-3">
+        <div className="w-12 h-12 rounded-2xl bg-purple-100 flex items-center justify-center">
+          <BarChart3 className="w-6 h-6 text-purple-600" />
         </div>
-        <p className="text-sm text-slate-500">Tournament performance analytics</p>
+        <div>
+          <h2 className="text-lg font-bold text-slate-900">Statistics</h2>
+          <p className="text-sm text-slate-500">Tournament performance analytics</p>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3">

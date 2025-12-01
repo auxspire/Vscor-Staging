@@ -104,7 +104,12 @@ const LiveMatchesScreen: React.FC<LiveMatchesScreenProps> = ({
     loadMatches();
   }, []);
 
-  const filteredMatches = matches
+  const nonAdHocMatches = matches.filter((match) => {
+    const tournamentLower = (match.tournament || "").toLowerCase();
+    return !tournamentLower.includes("ad hoc") && !tournamentLower.includes("adhoc");
+  });
+
+  const filteredMatches = nonAdHocMatches
     .filter((match) => {
       if (filter === "live") return match.status === "live";
       if (filter === "finished") return match.status === "finished";
@@ -117,7 +122,7 @@ const LiveMatchesScreen: React.FC<LiveMatchesScreenProps> = ({
         match.tournament.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-  const liveCount = matches.filter((m) => m.status === "live").length;
+  const liveCount = nonAdHocMatches.filter((m) => m.status === "live").length;
 
   return (
     <div className="px-5 py-6 space-y-6">
@@ -144,16 +149,16 @@ const LiveMatchesScreen: React.FC<LiveMatchesScreenProps> = ({
         />
       </div>
 
-      <div className="flex gap-3">
-        <FilterButton active={filter === "all"} onClick={() => setFilter("all")}>
-          All Matches
-        </FilterButton>
-        <FilterButton active={filter === "live"} onClick={() => setFilter("live")} badge={liveCount > 0 ? liveCount : undefined}>
+      <div className="flex p-1 bg-slate-100 rounded-2xl">
+        <SegmentedTab active={filter === "all"} onClick={() => setFilter("all")}>
+          All
+        </SegmentedTab>
+        <SegmentedTab active={filter === "live"} onClick={() => setFilter("live")} badge={liveCount > 0 ? liveCount : undefined}>
           Live
-        </FilterButton>
-        <FilterButton active={filter === "finished"} onClick={() => setFilter("finished")}>
+        </SegmentedTab>
+        <SegmentedTab active={filter === "finished"} onClick={() => setFilter("finished")}>
           Finished
-        </FilterButton>
+        </SegmentedTab>
       </div>
 
       {error && (
@@ -188,25 +193,29 @@ const LiveMatchesScreen: React.FC<LiveMatchesScreenProps> = ({
   );
 };
 
-type FilterButtonProps = {
+type SegmentedTabProps = {
   active: boolean;
   onClick: () => void;
   badge?: number;
   children: React.ReactNode;
 };
 
-const FilterButton: React.FC<FilterButtonProps> = ({ active, onClick, badge, children }) => (
+const SegmentedTab: React.FC<SegmentedTabProps> = ({ active, onClick, badge, children }) => (
   <button
+    role="tab"
+    aria-selected={active}
     onClick={onClick}
-    className={`px-5 py-3 rounded-2xl text-sm font-semibold transition-all flex items-center gap-2 ${
+    className={`flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
       active
-        ? "bg-purple-600 text-white shadow-lg shadow-purple-500/25"
-        : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 shadow-sm"
+        ? "bg-white text-purple-600 shadow-sm"
+        : "text-slate-500 hover:text-slate-700"
     }`}
   >
     {children}
-    {badge !== undefined && (
-      <span className={`px-2 py-0.5 text-xs font-bold rounded-full ${active ? "bg-white/20 text-white" : "bg-red-500 text-white"}`}>
+    {badge !== undefined && badge > 0 && (
+      <span className={`w-5 h-5 text-xs font-bold rounded-full flex items-center justify-center ${
+        active ? "bg-red-500 text-white" : "bg-red-500 text-white"
+      }`}>
         {badge}
       </span>
     )}

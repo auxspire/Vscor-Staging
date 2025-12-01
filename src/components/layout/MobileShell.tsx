@@ -75,8 +75,16 @@ const MobileShell: React.FC<MobileShellProps> = ({
       </main>
 
       {!hideBottomNav && (
-        <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 px-2 py-3 z-50 shadow-lg shadow-slate-900/5">
-          <div className="flex justify-around items-end max-w-md mx-auto">
+        <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 px-2 pb-2 pt-3 z-50 shadow-lg shadow-slate-900/5">
+          <div className="flex justify-around items-center max-w-md mx-auto">
+            <TabButton
+              icon={Home}
+              label="Home"
+              isActive={activeTab === "scoring"}
+              onClick={() => onTabChange("scoring")}
+              isPrimary
+            />
+            
             <TabButton
               icon={CirclePlay}
               label="Live"
@@ -90,26 +98,6 @@ const MobileShell: React.FC<MobileShellProps> = ({
               isActive={activeTab === "tournaments"}
               onClick={() => onTabChange("tournaments")}
             />
-            
-            <button
-              onClick={() => onTabChange("scoring")}
-              className="flex flex-col items-center -mt-6"
-            >
-              <div
-                className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all shadow-xl ${
-                  activeTab === "scoring"
-                    ? "bg-gradient-to-br from-purple-600 to-purple-700 shadow-purple-500/40"
-                    : "bg-gradient-to-br from-purple-500 to-purple-600 shadow-purple-400/30"
-                }`}
-              >
-                <Home className="w-7 h-7 text-white" />
-              </div>
-              <span className={`mt-2 text-xs font-semibold ${
-                activeTab === "scoring" ? "text-purple-600" : "text-slate-500"
-              }`}>
-                Home
-              </span>
-            </button>
             
             <TabButton
               icon={BarChart3}
@@ -129,19 +117,28 @@ type TabButtonProps = {
   label: string;
   isActive: boolean;
   onClick: () => void;
+  isPrimary?: boolean;
 };
 
-const TabButton: React.FC<TabButtonProps> = ({ icon: Icon, label, isActive, onClick }) => (
+const TabButton: React.FC<TabButtonProps> = ({ icon: Icon, label, isActive, onClick, isPrimary }) => (
   <button
     onClick={onClick}
-    className={`flex flex-col items-center gap-1.5 py-2 px-3 min-w-[64px] transition-colors ${
+    className={`flex flex-col items-center gap-1 py-1 px-2 min-w-[60px] transition-colors ${
       isActive ? "text-purple-600" : "text-slate-400"
     }`}
   >
-    <div className={`p-2 rounded-xl transition-colors ${isActive ? "bg-purple-50" : ""}`}>
-      <Icon className="w-6 h-6" />
+    <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+      isPrimary && isActive 
+        ? "bg-gradient-to-br from-purple-600 to-purple-700 shadow-lg shadow-purple-500/30" 
+        : isPrimary 
+          ? "bg-gradient-to-br from-purple-500 to-purple-600 shadow-md shadow-purple-400/20"
+          : isActive 
+            ? "bg-purple-50" 
+            : ""
+    }`}>
+      <Icon className={`w-5 h-5 ${isPrimary ? "text-white" : ""}`} />
     </div>
-    <span className="text-xs font-semibold">{label}</span>
+    <span className="text-[10px] font-semibold">{label}</span>
   </button>
 );
 
