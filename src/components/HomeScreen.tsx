@@ -161,8 +161,8 @@ const QuickActionTile: React.FC<QuickActionTileProps> = ({
       onClick={onClick}
       className={`${s.container} rounded-3xl p-5 aspect-square flex flex-col items-center justify-center gap-4 transition-all active:scale-[0.97] hover:shadow-xl`}
     >
-      <div className={`w-14 h-14 rounded-2xl ${s.iconContainer} flex items-center justify-center`}>
-        <Icon className={`w-7 h-7 ${s.iconColor}`} />
+      <div className={`w-14 h-14 rounded-2xl ${s.iconContainer} flex items-center justify-center ${s.iconColor}`}>
+        <Icon className="w-7 h-7" strokeWidth={2.5} />
       </div>
       <span className={`text-sm font-bold ${s.titleColor}`}>{title}</span>
     </button>
