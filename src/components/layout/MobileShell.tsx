@@ -1,5 +1,5 @@
 import React from "react";
-import { CirclePlay, BarChart3, Home, ArrowLeft, Trophy } from "lucide-react";
+import { CirclePlay, BarChart3, Goal, ArrowLeft, Trophy } from "lucide-react";
 import vscorLogo from "../../assets/vscor-logo.png";
 
 type TabType = "live" | "scoring" | "stats" | "tournaments";
@@ -78,7 +78,7 @@ const MobileShell: React.FC<MobileShellProps> = ({
         <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 px-2 pb-2 pt-3 z-50 shadow-lg shadow-slate-900/5">
           <div className="flex justify-around items-center max-w-md mx-auto">
             <TabButton
-              icon={Home}
+              icon={Goal}
               label="Home"
               isActive={activeTab === "scoring"}
               onClick={() => onTabChange("scoring")}

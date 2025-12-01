@@ -45,29 +45,25 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
           <p className="text-sm text-slate-500">Start scoring in seconds</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3">
           <QuickActionTile
             icon={Plus}
             title="New Match"
-            variant="primary"
             onClick={onNewMatch}
           />
           <QuickActionTile
             icon={Trophy}
-            title="Tournament"
-            variant="secondary"
+            title="Add Tournament"
             onClick={onAddTournament}
           />
           <QuickActionTile
             icon={Users}
             title="Add Team"
-            variant="default"
             onClick={onAddTeam}
           />
           <QuickActionTile
             icon={UserPlus}
             title="Add Player"
-            variant="default"
             onClick={onAddPlayer}
           />
         </div>
@@ -130,41 +126,17 @@ type QuickActionTileProps = {
 const QuickActionTile: React.FC<QuickActionTileProps> = ({
   icon: Icon,
   title,
-  variant = "default",
   onClick,
 }) => {
-  const styles = {
-    primary: {
-      container: "bg-gradient-to-br from-purple-600 to-purple-700 shadow-lg shadow-purple-500/25",
-      iconContainer: "bg-white/20 backdrop-blur-sm",
-      iconColor: "text-white",
-      titleColor: "text-white",
-    },
-    secondary: {
-      container: "bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/25",
-      iconContainer: "bg-white/20 backdrop-blur-sm",
-      iconColor: "text-white",
-      titleColor: "text-white",
-    },
-    default: {
-      container: "bg-white border-2 border-slate-200 shadow-sm",
-      iconContainer: "bg-slate-100",
-      iconColor: "text-slate-700",
-      titleColor: "text-slate-900",
-    },
-  };
-
-  const s = styles[variant];
-
   return (
     <button
       onClick={onClick}
-      className={`${s.container} rounded-3xl p-5 aspect-square flex flex-col items-center justify-center gap-4 transition-all active:scale-[0.97] hover:shadow-xl`}
+      className="bg-purple-100 rounded-2xl p-5 aspect-square flex flex-col items-center justify-center gap-3 transition-all active:scale-[0.97] hover:bg-purple-150 hover:shadow-md"
     >
-      <div className={`w-14 h-14 rounded-2xl ${s.iconContainer} flex items-center justify-center ${s.iconColor}`}>
-        <Icon className="w-7 h-7" strokeWidth={2.5} />
+      <div className="w-12 h-12 rounded-full bg-purple-200 flex items-center justify-center text-purple-700">
+        <Icon className="w-6 h-6" strokeWidth={2.5} />
       </div>
-      <span className={`text-sm font-bold ${s.titleColor}`}>{title}</span>
+      <span className="text-sm font-bold text-purple-900">{title}</span>
     </button>
   );
 };
