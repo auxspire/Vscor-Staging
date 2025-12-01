@@ -1,4 +1,3 @@
-// src/components/ui/vscor-ui.tsx
 import React from "react";
 import type { LucideIcon } from "lucide-react";
 
@@ -15,16 +14,14 @@ export const VSSection: React.FC<VSSectionProps> = ({
   children,
   className = "",
 }) => (
-  <section className={`mb-5 ${className}`}>
-    <header className="flex items-baseline justify-between mb-2 px-1">
-      <div>
-        <h2 className="text-sm font-semibold text-slate-100">{title}</h2>
-        {subtitle && (
-          <p className="text-[11px] text-slate-400 mt-0.5">{subtitle}</p>
-        )}
-      </div>
+  <section className={`mb-6 ${className}`}>
+    <header className="mb-4">
+      <h2 className="text-lg font-bold text-slate-900">{title}</h2>
+      {subtitle && (
+        <p className="text-sm text-slate-500 mt-1">{subtitle}</p>
+      )}
     </header>
-    <div className="bg-white/5 border border-white/10 rounded-2xl p-3 shadow-[0_14px_40px_rgba(0,0,0,0.55)]">
+    <div className="bg-white border border-slate-200 rounded-3xl p-5 shadow-sm">
       {children}
     </div>
   </section>
@@ -45,41 +42,32 @@ export const VSQuickAction: React.FC<VSQuickActionProps> = ({
   variant = "neutral",
   onClick,
 }) => {
-  const palette =
-    variant === "primary"
-      ? "from-purple-500/90 to-indigo-500/90 text-white"
-      : variant === "secondary"
-      ? "from-emerald-500/90 to-teal-500/90 text-white"
-      : "from-slate-100 to-slate-200 text-slate-900";
+  const containerStyles = {
+    primary: "bg-gradient-to-br from-purple-600 to-purple-700 text-white shadow-lg shadow-purple-500/25",
+    secondary: "bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25",
+    neutral: "bg-white border-2 border-slate-200 text-slate-900 shadow-sm",
+  };
 
-  const chipBg =
-    variant === "primary"
-      ? "bg-white/15 text-white"
-      : variant === "secondary"
-      ? "bg-white/15 text-white"
-      : "bg-white text-slate-900";
+  const iconBgStyles = {
+    primary: "bg-white/20",
+    secondary: "bg-white/20",
+    neutral: "bg-slate-100",
+  };
 
   return (
     <button
       onClick={onClick}
-      className="group text-left rounded-2xl p-3 bg-gradient-to-br shadow-lg shadow-black/40 border border-white/10 active:scale-95 transition-all duration-150 flex flex-col justify-between min-h-[88px]"
+      className={`group text-left rounded-3xl p-5 active:scale-[0.97] transition-all flex flex-col justify-between min-h-[100px] ${containerStyles[variant]}`}
     >
-      <div
-        className={`w-9 h-9 rounded-2xl flex items-center justify-center mb-2 ${chipBg}`}
-      >
-        <Icon className="w-4 h-4" />
+      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-3 ${iconBgStyles[variant]}`}>
+        <Icon className="w-6 h-6" />
       </div>
       <div>
-        <p className="text-[13px] font-semibold leading-tight">{label}</p>
+        <p className="text-sm font-bold leading-tight">{label}</p>
         {hint && (
-          <p className="text-[11px] opacity-80 mt-0.5 group-hover:opacity-100">
-            {hint}
-          </p>
+          <p className="text-xs opacity-80 mt-1 group-hover:opacity-100">{hint}</p>
         )}
       </div>
-      <div
-        className={`absolute inset-0 rounded-2xl -z-10 opacity-90 bg-gradient-to-br ${palette}`}
-      />
     </button>
   );
 };
@@ -92,16 +80,17 @@ type VSPillProps = {
 };
 
 export const VSPill: React.FC<VSPillProps> = ({ tone = "finished", children }) => {
-  const base =
-    "inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-[0.14em]";
-  const toneClass =
-    tone === "live"
-      ? "bg-red-500/90 text-white animate-pulse"
-      : tone === "upcoming"
-      ? "bg-blue-500/90 text-white"
-      : "bg-slate-700/80 text-slate-50";
+  const toneStyles = {
+    live: "bg-red-100 text-red-700 border-red-200",
+    upcoming: "bg-blue-100 text-blue-700 border-blue-200",
+    finished: "bg-slate-100 text-slate-600 border-slate-200",
+  };
 
-  return <span className={`${base} ${toneClass}`}>{children}</span>;
+  return (
+    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border ${toneStyles[tone]}`}>
+      {children}
+    </span>
+  );
 };
 
 type VSMatchCardProps = {
@@ -129,51 +118,47 @@ export const VSMatchCard: React.FC<VSMatchCardProps> = ({
   onClick,
   rightSlot,
 }) => {
-  const badgeTone: StatusTone = statusTone;
-
   return (
     <button
       type="button"
       onClick={onClick}
-      className="w-full text-left rounded-2xl bg-gradient-to-br from-slate-900/90 to-black/90 border border-white/10 shadow-[0_12px_40px_rgba(0,0,0,0.7)] px-3 py-3 flex items-stretch gap-3 active:scale-[0.98] transition-transform"
+      className="w-full text-left rounded-3xl bg-white border border-slate-200 shadow-sm px-5 py-4 flex items-stretch gap-4 active:scale-[0.98] transition-all cursor-pointer hover:border-purple-200 hover:shadow-lg"
     >
-      <div className="flex-1 flex flex-col gap-2">
+      <div className="flex-1 flex flex-col gap-3">
         <div className="flex items-start justify-between gap-2">
           <div className="flex flex-col">
-            <p className="text-[11px] text-slate-400">
-              {tournamentName || "Friendly / Tournament"}
+            <p className="text-sm text-slate-500 font-medium">
+              {tournamentName || "Match"}
             </p>
             {metaLine && (
-              <p className="text-[10px] text-slate-500 mt-0.5">{metaLine}</p>
+              <p className="text-xs text-slate-400 mt-0.5">{metaLine}</p>
             )}
           </div>
-          {statusLabel && <VSPill tone={badgeTone}>{statusLabel}</VSPill>}
+          {statusLabel && <VSPill tone={statusTone}>{statusLabel}</VSPill>}
         </div>
 
-        <div className="flex items-center gap-2">
-          <div className="flex-1 flex items-center gap-2">
-            <div className="w-7 h-7 rounded-full bg-slate-800 text-[11px] font-semibold text-slate-50 flex items-center justify-center">
-              {teamA.charAt(0).toUpperCase()}
-            </div>
-            <div>
-              <p className="text-[13px] font-semibold text-slate-50 leading-snug">
-                {teamA}
-              </p>
-              <p className="text-[11px] text-slate-400">vs {teamB}</p>
-            </div>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-2xl bg-slate-100 text-sm font-bold text-slate-700 flex items-center justify-center">
+            {teamA.charAt(0).toUpperCase()}
+          </div>
+          <div>
+            <p className="text-base font-bold text-slate-900 leading-snug">
+              {teamA}
+            </p>
+            <p className="text-sm text-slate-500">vs {teamB}</p>
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col items-center justify-center min-w-[64px] px-2">
-        <div className="text-xl font-semibold text-slate-50 leading-none">
+      <div className="flex flex-col items-center justify-center min-w-[80px] px-3 bg-slate-50 rounded-2xl">
+        <div className="text-2xl font-bold text-slate-900 leading-none">
           {scoreA} - {scoreB}
         </div>
         {rightSlot ? (
-          <div className="mt-1">{rightSlot}</div>
+          <div className="mt-2">{rightSlot}</div>
         ) : (
-          <div className="text-[10px] text-slate-400 mt-1 uppercase tracking-[0.12em]">
-            {badgeTone === "live" ? "LIVE" : badgeTone === "upcoming" ? "UPCOMING" : "FINAL"}
+          <div className="text-xs text-slate-500 mt-1 uppercase font-semibold">
+            {statusTone === "live" ? "LIVE" : statusTone === "upcoming" ? "UPCOMING" : "FINAL"}
           </div>
         )}
       </div>

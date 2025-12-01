@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Search, Filter, Calendar, Clock, Radio, ChevronRight } from "lucide-react";
+import { Search, Calendar, Clock, Radio, ChevronRight, MapPin, Trophy } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import type { TeamClickPayload, TournamentClickPayload } from "../lib/matches";
 
@@ -54,7 +54,7 @@ const LiveMatchesScreen: React.FC<LiveMatchesScreenProps> = ({
     else if (rawStatus === "finished" || rawStatus === "ft" || row.is_finished) status = "finished";
     else if (rawStatus === "upcoming" || rawStatus === "scheduled") status = "upcoming";
 
-    const tournament = row.tournament_name ?? row.tournament ?? row.competition_name ?? "Friendly";
+    const tournament = row.tournament_name ?? row.tournament ?? row.competition_name ?? "";
     const venue = row.venue ?? row.stadium ?? "";
 
     return {
@@ -120,14 +120,18 @@ const LiveMatchesScreen: React.FC<LiveMatchesScreenProps> = ({
   const liveCount = matches.filter((m) => m.status === "live").length;
 
   return (
-    <div className="px-4 py-5 space-y-5">
-      <div>
-        <div className="flex items-center gap-2 mb-1">
-          <Radio className="w-4 h-4 text-red-500" />
-          <span className="text-xs font-medium text-red-600 uppercase tracking-wide">Live Centre</span>
+    <div className="px-5 py-6 space-y-6">
+      <section>
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-10 h-10 rounded-2xl bg-red-100 flex items-center justify-center">
+            <Radio className="w-5 h-5 text-red-600" />
+          </div>
+          <div>
+            <h2 className="text-lg font-bold text-slate-900">Live Centre</h2>
+            <p className="text-sm text-slate-500">Real-time scores and updates</p>
+          </div>
         </div>
-        <p className="text-sm text-slate-500">Real-time scores and match updates</p>
-      </div>
+      </section>
 
       <div className="relative">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
@@ -136,11 +140,11 @@ const LiveMatchesScreen: React.FC<LiveMatchesScreenProps> = ({
           placeholder="Search teams, tournaments..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+          className="w-full pl-12 pr-4 py-4 bg-white border border-slate-200 rounded-2xl text-base text-slate-900 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent shadow-sm"
         />
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-3">
         <FilterButton active={filter === "all"} onClick={() => setFilter("all")}>
           All Matches
         </FilterButton>
@@ -153,27 +157,29 @@ const LiveMatchesScreen: React.FC<LiveMatchesScreenProps> = ({
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3">
-          <div className="w-2 h-2 rounded-full bg-red-500" />
-          {error}
+        <div className="flex items-center gap-3 text-sm text-red-700 bg-red-50 border border-red-100 rounded-2xl px-5 py-4">
+          <div className="w-2 h-2 rounded-full bg-red-500 flex-shrink-0" />
+          <span>{error}</span>
         </div>
       )}
 
       {loading && matches.length === 0 && (
-        <div className="flex items-center justify-center py-12">
-          <div className="animate-spin w-6 h-6 border-2 border-purple-600 border-t-transparent rounded-full" />
+        <div className="flex items-center justify-center py-16">
+          <div className="animate-spin w-8 h-8 border-3 border-purple-600 border-t-transparent rounded-full" />
         </div>
       )}
 
       {!loading && filteredMatches.length === 0 && (
-        <div className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl p-8 text-center">
-          <Calendar className="w-12 h-12 mx-auto mb-3 text-slate-400" />
-          <p className="text-sm font-medium text-slate-700 mb-1">No matches found</p>
-          <p className="text-xs text-slate-500">Try adjusting your search or filters</p>
+        <div className="bg-white border border-slate-200 border-dashed rounded-3xl p-10 text-center">
+          <div className="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-4">
+            <Calendar className="w-8 h-8 text-slate-400" />
+          </div>
+          <p className="text-base font-medium text-slate-700 mb-2">No matches found</p>
+          <p className="text-sm text-slate-500">Try adjusting your search or filters</p>
         </div>
       )}
 
-      <div className="space-y-3">
+      <div className="space-y-4">
         {filteredMatches.map((match) => (
           <LiveMatchCard key={match.id} match={match} onClick={() => onMatchClick(match)} />
         ))}
@@ -192,15 +198,15 @@ type FilterButtonProps = {
 const FilterButton: React.FC<FilterButtonProps> = ({ active, onClick, badge, children }) => (
   <button
     onClick={onClick}
-    className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2 ${
+    className={`px-5 py-3 rounded-2xl text-sm font-semibold transition-all flex items-center gap-2 ${
       active
-        ? "bg-purple-600 text-white shadow-sm"
-        : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
+        ? "bg-purple-600 text-white shadow-lg shadow-purple-500/25"
+        : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 shadow-sm"
     }`}
   >
     {children}
     {badge !== undefined && (
-      <span className={`px-1.5 py-0.5 text-xs rounded-full ${active ? "bg-white/20 text-white" : "bg-red-500 text-white"}`}>
+      <span className={`px-2 py-0.5 text-xs font-bold rounded-full ${active ? "bg-white/20 text-white" : "bg-red-500 text-white"}`}>
         {badge}
       </span>
     )}
@@ -218,69 +224,71 @@ const LiveMatchCard: React.FC<LiveMatchCardProps> = ({ match, onClick }) => {
   return (
     <button
       onClick={onClick}
-      className="w-full bg-white rounded-2xl border border-slate-200 overflow-hidden transition-all active:scale-[0.98] hover:border-purple-200 hover:shadow-md"
+      className="w-full bg-white rounded-3xl border border-slate-200 overflow-hidden transition-all active:scale-[0.98] hover:border-purple-200 hover:shadow-xl shadow-sm"
     >
       {isLive && (
-        <div className="bg-gradient-to-r from-red-500 to-rose-500 px-4 py-1.5 flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-          <span className="text-xs font-semibold text-white uppercase tracking-wide">Live Now</span>
-          {match.time && <span className="text-xs text-white/80 ml-auto">{match.time}</span>}
+        <div className="bg-gradient-to-r from-red-500 to-rose-500 px-5 py-2.5 flex items-center gap-3">
+          <span className="w-2.5 h-2.5 rounded-full bg-white animate-pulse" />
+          <span className="text-sm font-bold text-white uppercase tracking-wide">Live Now</span>
+          {match.time && <span className="text-sm text-white/80 ml-auto font-medium">{match.time}</span>}
         </div>
       )}
 
-      <div className="p-4">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex-1">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-sm font-bold text-slate-700">
+      <div className="p-5">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-50 border border-slate-200 flex items-center justify-center text-lg font-bold text-slate-700 flex-shrink-0">
                 {match.teamA.charAt(0)}
               </div>
-              <div className="text-left">
-                <p className="text-sm font-semibold text-slate-900">{match.teamA}</p>
-                <p className="text-xs text-slate-500">Home</p>
+              <div className="text-left min-w-0">
+                <p className="text-base font-bold text-slate-900 truncate">{match.teamA}</p>
+                <p className="text-sm text-slate-500">Home</p>
               </div>
             </div>
           </div>
 
-          <div className="px-4 py-2 bg-slate-50 rounded-xl text-center min-w-[80px]">
-            <p className="text-xl font-bold text-slate-900">
+          <div className="px-5 py-3 bg-slate-50 rounded-2xl text-center flex-shrink-0 min-w-[100px]">
+            <p className="text-2xl font-bold text-slate-900">
               {match.scoreA} - {match.scoreB}
             </p>
             {!isLive && (
-              <p className="text-[10px] uppercase text-slate-500 font-medium">{match.status === "finished" ? "Final" : match.status}</p>
+              <p className="text-xs uppercase text-slate-500 font-semibold mt-1">{match.status === "finished" ? "Full Time" : match.status}</p>
             )}
           </div>
 
-          <div className="flex-1">
-            <div className="flex items-center gap-3 justify-end">
-              <div className="text-right">
-                <p className="text-sm font-semibold text-slate-900">{match.teamB}</p>
-                <p className="text-xs text-slate-500">Away</p>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-4 justify-end">
+              <div className="text-right min-w-0">
+                <p className="text-base font-bold text-slate-900 truncate">{match.teamB}</p>
+                <p className="text-sm text-slate-500">Away</p>
               </div>
-              <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-sm font-bold text-slate-700">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-50 border border-slate-200 flex items-center justify-center text-lg font-bold text-slate-700 flex-shrink-0">
                 {match.teamB.charAt(0)}
               </div>
             </div>
           </div>
         </div>
 
-        <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-          <div className="flex items-center gap-4 text-xs text-slate-500">
-            {match.tournament && (
-              <span className="flex items-center gap-1">
-                <Calendar className="w-3 h-3" />
-                {match.tournament}
-              </span>
-            )}
-            {match.venue && (
-              <span className="flex items-center gap-1">
-                <Clock className="w-3 h-3" />
-                {match.venue}
-              </span>
-            )}
+        {(match.tournament || match.venue) && (
+          <div className="flex items-center justify-between pt-4 mt-4 border-t border-slate-100">
+            <div className="flex items-center gap-4 text-sm text-slate-500">
+              {match.tournament && (
+                <span className="flex items-center gap-2">
+                  <Trophy className="w-4 h-4" />
+                  <span className="font-medium">{match.tournament}</span>
+                </span>
+              )}
+              {match.venue && (
+                <span className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4" />
+                  <span>{match.venue}</span>
+                </span>
+              )}
+            </div>
+            <ChevronRight className="w-5 h-5 text-slate-400" />
           </div>
-          <ChevronRight className="w-4 h-4 text-slate-400" />
-        </div>
+        )}
       </div>
     </button>
   );

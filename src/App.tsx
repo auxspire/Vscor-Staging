@@ -64,7 +64,7 @@ type FinalMatchData = {
 };
 
 const App: React.FC<AppProps> = ({ currentUser, onLogout }) => {
-  const [activeTab, setActiveTab] = useState<TabType>("scoring");
+  const [activeTab, setActiveTab] = useState<TabType>("scoring"); // Home tab is "scoring"
   const [currentScreen, setCurrentScreen] = useState<ScreenType>("main");
   const [screenHistory, setScreenHistory] = useState<ScreenType[]>([]);
 

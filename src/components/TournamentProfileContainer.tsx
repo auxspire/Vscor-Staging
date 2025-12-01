@@ -383,39 +383,33 @@ const TournamentProfileContainer: React.FC<Props> = ({
   };
 
   // ---------------------------
-  // Header & Tabs (dark style)
+  // Header & Tabs (light theme with card navigation)
   // ---------------------------
   const renderHeader = () => {
     const t = profile?.tournament;
     return (
-      <div className="px-1 pt-2 pb-3 flex items-center gap-3">
-        <button
-          onClick={onBack}
-          className="p-2 rounded-full bg-slate-900 border border-slate-700 hover:bg-slate-800 active:scale-95 transition"
-        >
-          <ArrowLeft className="w-4 h-4 text-slate-100" />
-        </button>
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-2xl bg-purple-600/90 flex items-center justify-center shadow-md shadow-purple-900/60">
-            <Trophy className="w-4 h-4 text-white" />
+      <div className="bg-white rounded-3xl border border-slate-200 p-5 mb-5 shadow-sm">
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-600 to-purple-700 flex items-center justify-center shadow-lg shadow-purple-500/25">
+            <Trophy className="w-7 h-7 text-white" />
           </div>
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.18em] text-slate-400">
+          <div className="flex-1">
+            <p className="text-xs uppercase tracking-widest text-purple-600 font-bold mb-1">
               Tournament
             </p>
-            <h1 className="text-sm font-semibold text-slate-50">
+            <h1 className="text-xl font-bold text-slate-900 leading-tight">
               {t?.name || "Tournament"}
             </h1>
-            <div className="flex items-center gap-2 text-[11px] text-slate-400">
+            <div className="flex items-center gap-3 text-sm text-slate-500 mt-1">
               {t?.season && (
-                <span className="flex items-center gap-1">
-                  <Calendar className="w-3 h-3" />
+                <span className="flex items-center gap-1.5">
+                  <Calendar className="w-4 h-4" />
                   {t.season}
                 </span>
               )}
               {t?.country && (
-                <span className="flex items-center gap-1">
-                  <Flag className="w-3 h-3" />
+                <span className="flex items-center gap-1.5">
+                  <Flag className="w-4 h-4" />
                   {t.country}
                 </span>
               )}
@@ -427,23 +421,24 @@ const TournamentProfileContainer: React.FC<Props> = ({
   };
 
   const renderTabs = () => (
-    <div className="px-1 pb-2 flex gap-2 text-[11px] overflow-x-auto no-scrollbar">
+    <div className="grid grid-cols-4 gap-3 mb-5">
       {[
-        { id: "overview", label: "Overview" },
-        { id: "table", label: "Table" },
-        { id: "fixtures", label: "Fixtures" },
-        { id: "stats", label: "Stats" },
+        { id: "overview", label: "Overview", icon: "📋" },
+        { id: "table", label: "Table", icon: "📊" },
+        { id: "fixtures", label: "Fixtures", icon: "⚽" },
+        { id: "stats", label: "Stats", icon: "📈" },
       ].map((tab) => (
         <button
           key={tab.id}
           onClick={() => setActiveTab(tab.id as Tab)}
-          className={`px-3 py-1.5 rounded-full border transition whitespace-nowrap ${
+          className={`flex flex-col items-center justify-center p-4 rounded-2xl border transition-all ${
             activeTab === tab.id
-              ? "bg-purple-600 text-white border-purple-500 shadow-sm shadow-purple-900/70"
-              : "bg-slate-900/70 text-slate-300 border-slate-700 hover:bg-slate-900"
+              ? "bg-gradient-to-br from-purple-600 to-purple-700 text-white border-purple-500 shadow-lg shadow-purple-500/25"
+              : "bg-white text-slate-700 border-slate-200 hover:border-purple-200 hover:bg-purple-50 shadow-sm"
           }`}
         >
-          {tab.label}
+          <span className="text-xl mb-1">{tab.icon}</span>
+          <span className="text-xs font-semibold">{tab.label}</span>
         </button>
       ))}
     </div>
@@ -467,20 +462,20 @@ const TournamentProfileContainer: React.FC<Props> = ({
     return (
       <VSSection title="Overview" subtitle={subtitle}>
         {info?.description ? (
-          <p className="text-[13px] leading-relaxed text-slate-100">
+          <p className="text-sm leading-relaxed text-slate-700">
             {info.description}
           </p>
         ) : (
-          <p className="text-[13px] text-slate-400">
+          <p className="text-sm text-slate-500">
             No description yet. Add rules and description later from admin
             console.
           </p>
         )}
 
-        <div className="grid grid-cols-2 gap-3 mt-3 text-[11px]">
-          <div className="rounded-2xl border border-slate-700/80 bg-slate-950/80 p-3">
-            <p className="text-[10px] text-slate-400 mb-1">Dates</p>
-            <p className="text-[12px] font-medium text-slate-50">
+        <div className="grid grid-cols-2 gap-4 mt-4">
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <p className="text-xs text-slate-500 font-medium mb-1">Dates</p>
+            <p className="text-sm font-semibold text-slate-900">
               {t?.startDate
                 ? new Date(t.startDate).toLocaleDateString()
                 : "TBD"}{" "}
@@ -490,19 +485,19 @@ const TournamentProfileContainer: React.FC<Props> = ({
                 : "TBD"}
             </p>
           </div>
-          <div className="rounded-2xl border border-slate-700/80 bg-slate-950/80 p-3">
-            <p className="text-[10px] text-slate-400 mb-1">Venue</p>
-            <p className="text-[12px] font-medium text-slate-50 flex items-center gap-1">
-              <MapPin className="w-3 h-3" />
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <p className="text-xs text-slate-500 font-medium mb-1">Venue</p>
+            <p className="text-sm font-semibold text-slate-900 flex items-center gap-1.5">
+              <MapPin className="w-4 h-4 text-slate-500" />
               {t?.venue || "Not set"}
             </p>
           </div>
         </div>
 
         {info && (
-          <div className="rounded-2xl border border-slate-700/80 bg-slate-950/80 p-3 mt-3 text-[11px]">
-            <p className="text-[10px] text-slate-400 mb-1">Points System</p>
-            <p className="text-slate-50">
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 mt-4">
+            <p className="text-xs text-slate-500 font-medium mb-1">Points System</p>
+            <p className="text-sm font-semibold text-slate-900">
               Win: {info.pointsForWin} • Draw: {info.pointsForDraw} • Loss:{" "}
               {info.pointsForLoss}
             </p>
@@ -524,7 +519,7 @@ const TournamentProfileContainer: React.FC<Props> = ({
           title="Points Table"
           subtitle="Standings will update when finished fixtures are recorded."
         >
-          <p className="text-[12px] text-slate-400">
+          <p className="text-sm text-slate-500">
             No standings yet. Table updates automatically when finished
             fixtures are recorded.
           </p>
@@ -537,35 +532,35 @@ const TournamentProfileContainer: React.FC<Props> = ({
         title="Points Table"
         subtitle="Based on completed matches"
       >
-        <div className="flex items-center justify-between mb-2">
-          <span className="inline-flex items-center gap-1 text-[11px] text-slate-400">
-            <ListOrdered className="w-3 h-3" />
-            Table
+        <div className="flex items-center justify-between mb-3">
+          <span className="inline-flex items-center gap-2 text-sm text-slate-500 font-medium">
+            <ListOrdered className="w-4 h-4" />
+            Standings
           </span>
         </div>
-        <div className="divide-y divide-slate-800 text-[11px]">
+        <div className="divide-y divide-slate-100">
           {rows.map((row) => (
             <div
               key={row.teamId}
-              className="py-2 flex items-center justify-between"
+              className="py-3 flex items-center justify-between"
             >
-              <div className="flex items-center gap-2">
-                <span className="w-4 text-[11px] text-slate-500">
+              <div className="flex items-center gap-3">
+                <span className="w-6 h-6 rounded-lg bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-600">
                   {row.position}
                 </span>
-                <span className="text-slate-50 font-medium">
+                <span className="text-sm font-semibold text-slate-900">
                   {row.teamName}
                 </span>
               </div>
-              <div className="text-right text-slate-400">
+              <div className="text-right text-sm text-slate-500">
                 <div>
                   {row.played} • {row.won}-{row.drawn}-{row.lost}
                 </div>
                 <div>
                   {row.goalDiff >= 0 ? "+" : ""}
                   {row.goalDiff} •{" "}
-                  <span className="font-semibold text-purple-300">
-                    {row.points}
+                  <span className="font-bold text-purple-600">
+                    {row.points} pts
                   </span>
                 </div>
               </div>
@@ -577,25 +572,25 @@ const TournamentProfileContainer: React.FC<Props> = ({
   };
 
   // ---------------------------
-  // Fixture creation UI (dark)
+  // Fixture creation UI (light theme)
   // ---------------------------
   const renderCreateFixture = () => {
     if (!showCreateFixture) {
       return (
         <button
           onClick={() => setShowCreateFixture(true)}
-          className="w-full flex items-center justify-center gap-2 rounded-2xl border border-dashed border-purple-500/60 bg-purple-900/40 py-2 text-[11px] font-semibold text-purple-100 hover:bg-purple-900/60 active:bg-purple-950 transition"
+          className="w-full flex items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-purple-300 bg-purple-50 py-4 text-sm font-semibold text-purple-700 hover:bg-purple-100 active:bg-purple-200 transition"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-5 h-5" />
           <span>Create Fixture</span>
         </button>
       );
     }
 
     return (
-      <div className="rounded-2xl border border-purple-500/60 bg-purple-950/60 p-3 space-y-3">
+      <div className="rounded-2xl border border-purple-200 bg-purple-50 p-5 space-y-4">
         <div className="flex items-center justify-between">
-          <p className="text-[12px] font-semibold text-slate-50">
+          <p className="text-base font-bold text-slate-900">
             New Fixture
           </p>
           <button
@@ -604,20 +599,20 @@ const TournamentProfileContainer: React.FC<Props> = ({
               resetFixtureForm();
               setShowCreateFixture(false);
             }}
-            className="text-[11px] text-slate-400 hover:text-slate-100"
+            className="text-sm text-slate-500 hover:text-slate-700 font-medium"
           >
             Cancel
           </button>
         </div>
 
-        <form className="space-y-3" onSubmit={handleCreateFixture}>
-          <div className="grid grid-cols-2 gap-2">
-            <div className="space-y-1">
-              <label className="text-[10px] font-medium text-slate-200">
+        <form className="space-y-4" onSubmit={handleCreateFixture}>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <label className="text-xs font-semibold text-slate-700">
                 Home Team *
               </label>
               <select
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-2 py-1.5 text-[11px] text-slate-50 outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-purple-500"
                 value={homeTeamId}
                 onChange={(e) => setHomeTeamId(e.target.value)}
                 disabled={teamsLoading}
@@ -630,12 +625,12 @@ const TournamentProfileContainer: React.FC<Props> = ({
                 ))}
               </select>
             </div>
-            <div className="space-y-1">
-              <label className="text-[10px] font-medium text-slate-200">
+            <div className="space-y-2">
+              <label className="text-xs font-semibold text-slate-700">
                 Away Team *
               </label>
               <select
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-2 py-1.5 text-[11px] text-slate-50 outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-purple-500"
                 value={awayTeamId}
                 onChange={(e) => setAwayTeamId(e.target.value)}
                 disabled={teamsLoading}
@@ -650,36 +645,36 @@ const TournamentProfileContainer: React.FC<Props> = ({
             </div>
           </div>
 
-          <div className="space-y-1">
-            <label className="text-[10px] font-medium text-slate-200">
+          <div className="space-y-2">
+            <label className="text-xs font-semibold text-slate-700">
               Round (optional)
             </label>
             <input
-              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-1.5 text-[11px] text-slate-50 outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-purple-500"
               value={roundName}
               onChange={(e) => setRoundName(e.target.value)}
               placeholder="Group A, Matchday 1"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
-            <div className="space-y-1">
-              <label className="text-[10px] font-medium text-slate-200">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <label className="text-xs font-semibold text-slate-700">
                 Kickoff
               </label>
               <input
                 type="datetime-local"
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-1.5 text-[11px] text-slate-50 outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-purple-500"
                 value={kickoffAt}
                 onChange={(e) => setKickoffAt(e.target.value)}
               />
             </div>
-            <div className="space-y-1">
-              <label className="text-[10px] font-medium text-slate-200">
+            <div className="space-y-2">
+              <label className="text-xs font-semibold text-slate-700">
                 Venue
               </label>
               <input
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-1.5 text-[11px] text-slate-50 outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-purple-500"
                 value={venue}
                 onChange={(e) => setVenue(e.target.value)}
                 placeholder="Main Stadium"
@@ -688,7 +683,7 @@ const TournamentProfileContainer: React.FC<Props> = ({
           </div>
 
           {fixtureError && (
-            <p className="text-[11px] text-red-300 bg-red-900/40 border border-red-500/60 rounded-xl px-3 py-1.5">
+            <p className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
               {fixtureError}
             </p>
           )}
@@ -696,10 +691,10 @@ const TournamentProfileContainer: React.FC<Props> = ({
           <button
             type="submit"
             disabled={creatingFixture}
-            className="w-full mt-1 rounded-2xl bg-purple-600 hover:bg-purple-500 active:bg-purple-700 px-3 py-1.5 text-[11px] font-semibold text-white flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full rounded-2xl bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 px-4 py-4 text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed shadow-lg shadow-purple-500/25"
           >
             {creatingFixture && (
-              <Loader2 className="w-3 h-3 animate-spin" />
+              <Loader2 className="w-4 h-4 animate-spin" />
             )}
             <span>Create Fixture</span>
           </button>
@@ -768,33 +763,40 @@ const TournamentProfileContainer: React.FC<Props> = ({
               const isEditing = editingFixtureId === f.id;
 
               return (
-                <div key={f.id} className="space-y-1">
-                  <button
-                    type="button"
+                <div key={f.id} className="space-y-2">
+                  <div
+                    role="button"
+                    tabIndex={0}
                     onClick={() => handleFixtureClick(f)}
-                    className="w-full text-left rounded-2xl bg-slate-900 px-3 py-2 flex items-center justify-between active:scale-[0.99] transition-transform border border-slate-700"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleFixtureClick(f);
+                      }
+                    }}
+                    className="w-full text-left rounded-2xl bg-white border border-slate-200 px-4 py-4 flex items-center justify-between active:scale-[0.99] transition-transform cursor-pointer hover:border-purple-200 hover:shadow-md"
                   >
                     <div>
-                      <p className="text-[12px] font-semibold text-slate-50">
+                      <p className="text-sm font-bold text-slate-900">
                         {f.homeTeamName} vs {f.awayTeamName}
                       </p>
-                      <p className="text-[11px] text-slate-400 flex items-center gap-1 mt-0.5">
-                        <Clock className="w-3 h-3" />
+                      <p className="text-xs text-slate-500 flex items-center gap-1 mt-1">
+                        <Clock className="w-3.5 h-3.5" />
                         <span>{dateLabel}</span>
                         {f.venue && (
                           <>
-                            <span className="mx-1 text-slate-600">•</span>
-                            <MapPin className="w-3 h-3" />
+                            <span className="mx-1 text-slate-300">•</span>
+                            <MapPin className="w-3.5 h-3.5" />
                             <span>{f.venue}</span>
                           </>
                         )}
                       </p>
                     </div>
-                    <div className="text-right text-[11px] text-slate-400">
-                      <div className="font-semibold text-slate-50">
+                    <div className="text-right">
+                      <div className="text-lg font-bold text-slate-900">
                         {scoreLabel}
                       </div>
-                      <div className="mt-0.5 text-[10px] uppercase tracking-wide text-slate-500">
+                      <div className="mt-1 text-xs uppercase tracking-wide text-slate-500 font-semibold">
                         {f.status || "SCHEDULED"}
                       </div>
                       <button
@@ -803,28 +805,28 @@ const TournamentProfileContainer: React.FC<Props> = ({
                           e.stopPropagation();
                           handleStartEditFixture(f);
                         }}
-                        className="mt-1 inline-flex items-center text-[10px] text-purple-300 hover:underline"
+                        className="mt-2 inline-flex items-center text-xs font-semibold text-purple-600 hover:text-purple-700 hover:underline"
                       >
                         Edit
                       </button>
                     </div>
-                  </button>
+                  </div>
 
                   {isEditing && (
-                    <div className="mt-1 rounded-2xl border border-slate-700 bg-slate-950 px-3 py-3 space-y-2 text-[11px]">
+                    <div className="rounded-2xl border border-purple-200 bg-purple-50 px-4 py-4 space-y-3">
                       {editError && (
-                        <div className="text-[10px] text-red-300 bg-red-900/40 border border-red-500/60 rounded-md px-2 py-1 mb-1">
+                        <div className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-xl px-3 py-2">
                           {editError}
                         </div>
                       )}
 
-                      <div className="grid grid-cols-2 gap-2">
-                        <div className="space-y-0.5">
-                          <label className="text-[10px] font-medium text-slate-200">
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1">
+                          <label className="text-xs font-semibold text-slate-700">
                             Round
                           </label>
                           <input
-                            className="w-full rounded-lg border border-slate-700 bg-slate-950 px-2 py-1 text-[11px] text-slate-50 outline-none focus:ring-2 focus:ring-purple-500"
+                            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-purple-500"
                             value={editRoundName}
                             onChange={(e) =>
                               setEditRoundName(e.target.value)
@@ -832,13 +834,13 @@ const TournamentProfileContainer: React.FC<Props> = ({
                             placeholder="Matchday / Round"
                           />
                         </div>
-                        <div className="space-y-0.5">
-                          <label className="text-[10px] font-medium text-slate-200">
+                        <div className="space-y-1">
+                          <label className="text-xs font-semibold text-slate-700">
                             Kickoff
                           </label>
                           <input
                             type="datetime-local"
-                            className="w-full rounded-lg border border-slate-700 bg-slate-950 px-2 py-1 text-[11px] text-slate-50 outline-none focus:ring-2 focus:ring-purple-500"
+                            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-purple-500"
                             value={editKickoffAt}
                             onChange={(e) =>
                               setEditKickoffAt(e.target.value)
@@ -847,23 +849,23 @@ const TournamentProfileContainer: React.FC<Props> = ({
                         </div>
                       </div>
 
-                      <div className="space-y-0.5">
-                        <label className="text-[10px] font-medium text-slate-200">
+                      <div className="space-y-1">
+                        <label className="text-xs font-semibold text-slate-700">
                           Venue
                         </label>
                         <input
-                          className="w-full rounded-lg border border-slate-700 bg-slate-950 px-2 py-1 text-[11px] text-slate-50 outline-none focus:ring-2 focus:ring-purple-500"
+                          className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-purple-500"
                           value={editVenue}
                           onChange={(e) => setEditVenue(e.target.value)}
                           placeholder="Ground / Stadium"
                         />
                       </div>
 
-                      <div className="flex justify-end gap-2 pt-1">
+                      <div className="flex justify-end gap-3 pt-2">
                         <button
                           type="button"
                           onClick={handleCancelEditFixture}
-                          className="px-3 py-1 rounded-full border border-slate-700 text-[10px] text-slate-300"
+                          className="px-4 py-2 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-50"
                         >
                           Cancel
                         </button>
@@ -871,7 +873,7 @@ const TournamentProfileContainer: React.FC<Props> = ({
                           type="button"
                           onClick={handleSaveFixtureEdit}
                           disabled={editingFixtureSaving}
-                          className="px-3 py-1 rounded-full bg-purple-600 text-[10px] text-white disabled:opacity-60"
+                          className="px-4 py-2 rounded-xl bg-purple-600 text-sm font-bold text-white disabled:opacity-60 hover:bg-purple-700"
                         >
                           {editingFixtureSaving ? "Saving..." : "Save"}
                         </button>
@@ -894,7 +896,7 @@ const TournamentProfileContainer: React.FC<Props> = ({
     if (!profile) {
       return (
         <VSSection title="Stats">
-          <p className="text-[12px] text-slate-400">Loading stats…</p>
+          <p className="text-sm text-slate-500">Loading stats…</p>
         </VSSection>
       );
     }
@@ -909,7 +911,7 @@ const TournamentProfileContainer: React.FC<Props> = ({
           title="Stats"
           subtitle="Stats will appear when matches and events are recorded."
         >
-          <p className="text-[12px] text-slate-400">
+          <p className="text-sm text-slate-500">
             No stats yet. Stats will appear once matches and events are
             recorded.
           </p>

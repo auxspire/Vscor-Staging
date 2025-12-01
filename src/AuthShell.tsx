@@ -1,7 +1,8 @@
 import React, { useEffect, useState, FormEvent } from "react";
 import App from "./App";
 import { supabase } from "./lib/supabaseClient";
-import { CirclePlay, Mail, Lock, Loader2 } from "lucide-react";
+import { Mail, Lock, Loader2 } from "lucide-react";
+import vscorLogo from "./assets/vscor-logo.png";
 
 type AppUser = {
   id: string;
@@ -132,13 +133,17 @@ const AuthShell: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-purple-950 to-slate-900">
-        <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-2xl shadow-purple-500/30 mb-4">
-          <CirclePlay className="w-8 h-8 text-white" />
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-slate-50 to-purple-50">
+        <div className="relative mb-6">
+          <img 
+            src={vscorLogo} 
+            alt="VScor" 
+            className="w-28 h-28 object-contain drop-shadow-xl"
+          />
         </div>
-        <div className="flex items-center gap-2 text-slate-400">
-          <Loader2 className="w-4 h-4 animate-spin" />
-          <span className="text-sm">Loading VScor...</span>
+        <div className="flex items-center gap-3 text-slate-500">
+          <Loader2 className="w-5 h-5 animate-spin text-purple-600" />
+          <span className="text-base font-medium">Loading...</span>
         </div>
       </div>
     );
@@ -146,38 +151,37 @@ const AuthShell: React.FC = () => {
 
   if (!currentUser) {
     return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-900 via-purple-950 to-slate-900">
-        <div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
-          <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-2xl shadow-purple-500/40 mb-8">
-            <CirclePlay className="w-10 h-10 text-white" />
-          </div>
-          
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-white mb-2">VScor</h1>
-            <p className="text-slate-400">Live sports scoring made simple</p>
+      <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-50 via-white to-purple-50">
+        <div className="flex-1 flex flex-col items-center justify-center px-6 py-16">
+          <div className="mb-10">
+            <img 
+              src={vscorLogo} 
+              alt="VScor - Football Management App" 
+              className="w-36 h-36 object-contain drop-shadow-xl"
+            />
           </div>
 
           <div className="w-full max-w-sm">
-            <div className="bg-white rounded-3xl shadow-2xl p-6 space-y-5">
-              <div className="text-center">
-                <h2 className="text-xl font-semibold text-slate-900">Welcome back</h2>
-                <p className="text-sm text-slate-500 mt-1">Sign in to continue</p>
+            <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 p-8">
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-bold text-slate-900 mb-2">Welcome Back</h2>
+                <p className="text-base text-slate-500">Sign in to continue</p>
               </div>
 
               {authError && (
-                <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3">
-                  <div className="w-2 h-2 rounded-full bg-red-500" />
-                  {authError}
+                <div className="flex items-center gap-3 text-sm text-red-700 bg-red-50 border border-red-100 rounded-2xl px-4 py-4 mb-6">
+                  <div className="w-2 h-2 rounded-full bg-red-500 flex-shrink-0" />
+                  <span>{authError}</span>
                 </div>
               )}
 
-              <form onSubmit={handleLoginSubmit} className="space-y-4">
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium text-slate-700">Email</label>
+              <form onSubmit={handleLoginSubmit} className="space-y-5">
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-slate-700 block">Email</label>
                   <div className="relative">
                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                     <input
-                      className="w-full rounded-xl bg-slate-50 border border-slate-200 pl-12 pr-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                      className="w-full rounded-2xl bg-slate-50 border border-slate-200 pl-12 pr-4 py-4 text-slate-900 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent focus:bg-white transition-all text-base"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="you@example.com"
@@ -188,12 +192,12 @@ const AuthShell: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium text-slate-700">Password</label>
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-slate-700 block">Password</label>
                   <div className="relative">
                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                     <input
-                      className="w-full rounded-xl bg-slate-50 border border-slate-200 pl-12 pr-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                      className="w-full rounded-2xl bg-slate-50 border border-slate-200 pl-12 pr-4 py-4 text-slate-900 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent focus:bg-white transition-all text-base"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="Enter your password"
@@ -207,22 +211,23 @@ const AuthShell: React.FC = () => {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold py-3.5 hover:from-purple-700 hover:to-indigo-700 active:scale-[0.98] transition-all disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-purple-500/25"
+                  className="w-full flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold py-4 hover:from-purple-700 hover:to-purple-800 active:scale-[0.98] transition-all disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-purple-500/30 text-base mt-2"
                 >
                   {submitting ? (
                     <>
                       <Loader2 className="w-5 h-5 animate-spin" />
-                      Signing in...
+                      <span>Signing in...</span>
                     </>
                   ) : (
-                    "Sign in"
+                    "Sign In"
                   )}
                 </button>
               </form>
             </div>
 
-            <p className="text-center text-xs text-slate-500 mt-6 px-4">
-              By signing in, you agree to our Terms of Service and Privacy Policy
+            <p className="text-center text-sm text-slate-400 mt-8 px-4 leading-relaxed">
+              By signing in, you agree to our<br />
+              <span className="text-purple-600 font-medium">Terms of Service</span> and <span className="text-purple-600 font-medium">Privacy Policy</span>
             </p>
           </div>
         </div>

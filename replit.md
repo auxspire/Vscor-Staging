@@ -56,6 +56,32 @@ The project is configured for static deployment:
 ## Setup Date
 Project imported and configured for Replit on December 01, 2025
 
+## Design System (Updated December 01, 2025)
+
+### Theme
+- **Light theme** with purple (#8B5CF6) primary color
+- Soft neutrals (slate palette) for backgrounds and text
+- White cards with subtle slate borders and shadows
+- Generous spacing throughout (16-24px)
+
+### Key UI Components
+- **VScor Logo**: Purple shield with checkmark and football - displayed on login screen and header
+- **VSSection**: Light themed section cards with rounded corners (radius-3xl)
+- **VSMatchCard**: Match cards with team info, scores, and status badges
+- **VSQuickAction**: Square action tiles with centered icons and gradient backgrounds
+- **VSPill**: Status badges (live=red, upcoming=blue, finished=slate)
+
+### Navigation
+- **MobileShell**: Bottom tab bar with Home (default), Live, Tournaments, Stats
+- **Header**: VScor logo with app title and back navigation
+- Card-based tab navigation in tournament profiles
+
+### Design Principles
+- Mobile-first, professional appearance
+- Square action buttons with centered icons (not elongated rectangles)
+- Card-based patterns with 16-20px radii and subtle shadows
+- Proper accessibility: button elements for clickable items, role="button" for interactive divs
+
 ## Configuration Notes
 - Vite is configured to bind to 0.0.0.0:5000 for Replit's proxy
 - `allowedHosts: true` is set to allow Replit's proxy hosts
