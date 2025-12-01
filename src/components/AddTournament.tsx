@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
-const AddTournament = ({ onBack }) => {
+type AddTournamentProps = {
+  onBack: () => void;
+};
+
+const AddTournament: React.FC<AddTournamentProps> = ({ onBack }) => {
   const [tournamentName, setTournamentName] = useState('');
   const [format, setFormat] = useState('');
   const [startDate, setStartDate] = useState('');
@@ -29,11 +33,11 @@ const AddTournament = ({ onBack }) => {
     setPrizes([...prizes, { position: nextPosition, prize: '' }]);
   };
 
-  const removePrize = (index) => {
+  const removePrize = (index: number) => {
     setPrizes(prizes.filter((_, i) => i !== index));
   };
 
-  const updatePrize = (index, field, value) => {
+  const updatePrize = (index: number, field: string, value: string) => {
     const updatedPrizes = prizes.map((prize, i) => 
       i === index ? { ...prize, [field]: value } : prize
     );
@@ -62,15 +66,8 @@ const AddTournament = ({ onBack }) => {
   };
 
   return (
-    <div className="p-6 space-y-6 pb-24">
-      <div className="flex items-center gap-4">
-        <button onClick={onBack} className="p-2">
-          <ArrowLeft className="w-6 h-6" />
-        </button>
-        <h1 className="text-2xl font-medium">Add Tournament</h1>
-      </div>
-
-      <div className="space-y-6">
+    <div className="px-4 py-5 space-y-5 pb-24">
+      <div className="space-y-5">
         <div>
           <label className="block text-sm font-medium mb-2">Tournament Name</label>
           <Input

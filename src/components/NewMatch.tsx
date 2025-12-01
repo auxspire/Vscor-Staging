@@ -1,27 +1,7 @@
-// src/components/NewMatch.tsx
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  ChangeEvent,
-  FormEvent,
-} from "react";
-import { ArrowLeft, Search, Plus, Info } from "lucide-react";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/select";
+import React, { useState, useRef, useEffect, ChangeEvent, FormEvent } from "react";
+import { Search, Plus, ChevronDown, Clock, Users, MapPin } from "lucide-react";
 import AddTeam from "./AddTeam";
 import { supabase } from "../lib/supabaseClient";
-
-// -----------------------------
-// Types
-// -----------------------------
 
 type TeamAutocompleteProps = {
   value: string;
@@ -29,22 +9,25 @@ type TeamAutocompleteProps = {
   onAddTeam: () => void;
   placeholder: string;
   teamsList: string[];
+  label: string;
 };
 
 export type MatchDetails = {
   team1: string;
   team2: string;
   matchFormat: string;
-  duration: string; // minutes as string
+  duration: string;
   venue: string;
   playersPerTeam: string;
   scoreA: number;
   scoreB: number;
   startTime: Date;
   events: any[];
-  // Fixture linkage (optional)
   fixtureId?: string | number | null;
   tournamentId?: string | number | null;
+  team1FullRoster?: any[];
+  team2FullRoster?: any[];
+  id?: string | number;
 };
 
 export type FixtureContext = {
@@ -62,17 +45,10 @@ type NewMatchProps = {
   registeredTeams?: string[];
   onAddTeam: (team: any) => void;
   playerDatabase?: any[];
-  onAssignPlayerToTeam?: (
-    playerId: string | number,
-    teamId: string | number
-  ) => void;
+  onAssignPlayerToTeam?: (playerId: string | number, teamId: string | number) => void;
   onAddPlayer?: (player: any) => void;
   fixtureContext?: FixtureContext | null;
 };
-
-// -----------------------------
-// TeamAutocomplete
-// -----------------------------
 
 const TeamAutocomplete: React.FC<TeamAutocompleteProps> = ({
   value,
@@ -80,6 +56,7 @@ const TeamAutocomplete: React.FC<TeamAutocompleteProps> = ({
   onAddTeam,
   placeholder,
   teamsList,
+  label,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState<string>(value);
@@ -91,14 +68,10 @@ const TeamAutocomplete: React.FC<TeamAutocompleteProps> = ({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        wrapperRef.current &&
-        !wrapperRef.current.contains(event.target as Node)
-      ) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -120,59 +93,58 @@ const TeamAutocomplete: React.FC<TeamAutocompleteProps> = ({
   };
 
   return (
-    <div ref={wrapperRef} className="relative">
-      <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
-      <Input
-        placeholder={placeholder}
-        value={inputValue}
-        onChange={handleInputChange}
-        onFocus={() => setIsOpen(true)}
-        className="pl-10 py-3.5 border border-slate-200 rounded-2xl text-sm"
-      />
+    <div ref={wrapperRef} className="space-y-1.5">
+      <label className="text-sm font-medium text-slate-700">{label}</label>
+      <div className="relative">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 z-10" />
+        <input
+          type="text"
+          placeholder={placeholder}
+          value={inputValue}
+          onChange={handleInputChange}
+          onFocus={() => setIsOpen(true)}
+          className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+        />
 
-      {isOpen && (
-        <div className="absolute z-50 w-full mt-2 bg-white border border-slate-200 rounded-2xl shadow-lg max-h-64 overflow-y-auto">
-          {filteredTeams.length > 0 ? (
-            <>
-              {filteredTeams.map((team, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  onClick={() => handleSelectTeam(team)}
-                  className="w-full text-left px-4 py-2.5 hover:bg-slate-50 text-sm text-slate-700 transition-colors border-b border-slate-100 last:border-b-0"
-                >
-                  {team}
-                </button>
-              ))}
-            </>
-          ) : (
-            inputValue && (
-              <div className="px-4 py-3 text-slate-400 text-xs">
-                No teams found
-              </div>
-            )
-          )}
-
-          <button
-            type="button"
-            onClick={() => {
-              setIsOpen(false);
-              onAddTeam();
-            }}
-            className="w-full text-left px-4 py-3 hover:bg-purple-50 text-purple-600 flex items-center gap-2 text-sm font-medium"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Add Team</span>
-          </button>
-        </div>
-      )}
+        {isOpen && (
+          <div className="absolute z-50 w-full mt-2 bg-white border border-slate-200 rounded-xl shadow-lg max-h-64 overflow-y-auto">
+            {filteredTeams.length > 0 && filteredTeams.map((team, index) => (
+              <button
+                key={index}
+                type="button"
+                onClick={() => handleSelectTeam(team)}
+                className="w-full text-left px-4 py-3 hover:bg-slate-50 text-sm text-slate-900 transition-colors border-b border-slate-100 last:border-b-0"
+              >
+                {team}
+              </button>
+            ))}
+            {filteredTeams.length === 0 && inputValue && (
+              <div className="px-4 py-3 text-slate-500 text-sm">No teams found</div>
+            )}
+            <button
+              type="button"
+              onClick={() => {
+                setIsOpen(false);
+                onAddTeam();
+              }}
+              className="w-full text-left px-4 py-3 hover:bg-purple-50 text-purple-600 flex items-center gap-2 text-sm font-medium border-t border-slate-100"
+            >
+              <Plus className="w-4 h-4" />
+              Add New Team
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
 
-// -----------------------------
-// NewMatch (mobile-first)
-// -----------------------------
+const MATCH_FORMATS = [
+  { value: "5-a-side", label: "5-a-side", players: 5, duration: 40 },
+  { value: "7-a-side", label: "7-a-side", players: 7, duration: 60 },
+  { value: "11-a-side", label: "11-a-side", players: 11, duration: 90 },
+  { value: "custom", label: "Custom", players: 0, duration: 0 },
+];
 
 const NewMatch: React.FC<NewMatchProps> = ({
   onBack,
@@ -192,15 +164,11 @@ const NewMatch: React.FC<NewMatchProps> = ({
   const [playersPerTeam, setPlayersPerTeam] = useState<string>("");
   const [showAddTeam, setShowAddTeam] = useState(false);
   const [sameTeamError, setSameTeamError] = useState<string>("");
-
-  // Real team list (from parent OR Supabase)
   const [availableTeams, setAvailableTeams] = useState<string[]>(registeredTeams);
   const [loadingTeams, setLoadingTeams] = useState(false);
 
-  // 🔁 Pre-fill from fixture context (but don't override user edits)
   useEffect(() => {
     if (!fixtureContext) return;
-
     setTeam1((prev) => prev || fixtureContext.teamA || "");
     setTeam2((prev) => prev || fixtureContext.teamB || "");
     setVenue((prev) => prev || fixtureContext.venue || "");
@@ -209,20 +177,17 @@ const NewMatch: React.FC<NewMatchProps> = ({
     }
   }, [fixtureContext, duration]);
 
-  // Keep local list in sync with parent-provided teams
   useEffect(() => {
     if (registeredTeams && registeredTeams.length > 0) {
       setAvailableTeams(registeredTeams);
     }
   }, [registeredTeams]);
 
-  // If no teams passed in, load from Supabase `teams` table
   useEffect(() => {
     if (registeredTeams && registeredTeams.length > 0) return;
     if (availableTeams.length > 0) return;
 
     let cancelled = false;
-
     const loadTeams = async () => {
       try {
         setLoadingTeams(true);
@@ -240,29 +205,32 @@ const NewMatch: React.FC<NewMatchProps> = ({
           const names = data
             .map((row: any) => row.name as string | null)
             .filter((n): n is string => !!n);
-
           setAvailableTeams(Array.from(new Set(names)));
         }
       } catch (e) {
         console.error("[NewMatch] unexpected teams load error:", e);
       } finally {
-        if (!cancelled) {
-          setLoadingTeams(false);
-        }
+        if (!cancelled) setLoadingTeams(false);
       }
     };
 
     loadTeams();
-
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [registeredTeams, availableTeams.length]);
+
+  const handleFormatChange = (formatValue: string) => {
+    setMatchFormat(formatValue);
+    const format = MATCH_FORMATS.find((f) => f.value === formatValue);
+    if (format && format.value !== "custom") {
+      setPlayersPerTeam(String(format.players));
+      setDuration(String(format.duration));
+    }
+  };
 
   const handleTeam1Change = (value: string) => {
     setTeam1(value);
     if (value && value === team2) {
-      setSameTeamError("Home and Away teams cannot be the same.");
+      setSameTeamError("Teams cannot be the same");
     } else {
       setSameTeamError("");
     }
@@ -271,19 +239,13 @@ const NewMatch: React.FC<NewMatchProps> = ({
   const handleTeam2Change = (value: string) => {
     setTeam2(value);
     if (value && value === team1) {
-      setSameTeamError("Home and Away teams cannot be the same.");
+      setSameTeamError("Teams cannot be the same");
     } else {
       setSameTeamError("");
     }
   };
 
-  const isFormValid =
-    team1 &&
-    team2 &&
-    matchFormat &&
-    duration &&
-    playersPerTeam &&
-    !sameTeamError;
+  const isFormValid = team1 && team2 && matchFormat && duration && playersPerTeam && !sameTeamError;
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -307,15 +269,10 @@ const NewMatch: React.FC<NewMatchProps> = ({
     onSelectSquad?.(matchDetails);
   };
 
-  const handleAddTeamBack = () => {
-    setShowAddTeam(false);
-  };
-
-  // Full-screen AddTeam mode
   if (showAddTeam) {
     return (
       <AddTeam
-        onBack={handleAddTeamBack}
+        onBack={() => setShowAddTeam(false)}
         onAddTeam={onAddTeam}
         playerDatabase={playerDatabase}
         onAssignPlayerToTeam={onAssignPlayerToTeam}
@@ -324,197 +281,116 @@ const NewMatch: React.FC<NewMatchProps> = ({
     );
   }
 
-  // -----------------------------
-  // Mobile-first layout
-  // -----------------------------
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col">
-      <div className="max-w-md mx-auto w-full bg-white text-slate-900 pb-24 flex-1 flex flex-col">
-        {/* Header */}
-        <div className="px-4 pt-4 pb-3 flex items-center gap-3 border-b border-slate-100">
-          <button
-            type="button"
-            onClick={onBack}
-            className="rounded-full p-2 hover:bg-slate-100 active:scale-95 transition"
-          >
-            <ArrowLeft className="w-5 h-5 text-slate-700" />
-          </button>
-          <div className="flex flex-col">
-            <span className="text-[11px] uppercase tracking-[0.16em] text-slate-400">
-              Match Setup
-            </span>
-            <h1 className="text-lg font-semibold text-slate-900">
-              {fixtureContext ? "New Match from Fixture" : "New Match"}
-            </h1>
+    <div className="px-4 py-5 space-y-6">
+      <div>
+        <p className="text-sm text-slate-500">
+          Set up your match details and proceed to squad selection
+        </p>
+      </div>
+
+      {sameTeamError && (
+        <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3">
+          <div className="w-2 h-2 rounded-full bg-red-500" />
+          {sameTeamError}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <TeamAutocomplete
+          value={team1}
+          onChange={handleTeam1Change}
+          onAddTeam={() => setShowAddTeam(true)}
+          placeholder="Search or add team"
+          teamsList={availableTeams}
+          label="Home Team"
+        />
+
+        <TeamAutocomplete
+          value={team2}
+          onChange={handleTeam2Change}
+          onAddTeam={() => setShowAddTeam(true)}
+          placeholder="Search or add team"
+          teamsList={availableTeams}
+          label="Away Team"
+        />
+
+        <div className="space-y-1.5">
+          <label className="text-sm font-medium text-slate-700">Match Format</label>
+          <div className="grid grid-cols-2 gap-2">
+            {MATCH_FORMATS.map((format) => (
+              <button
+                key={format.value}
+                type="button"
+                onClick={() => handleFormatChange(format.value)}
+                className={`px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                  matchFormat === format.value
+                    ? "bg-purple-600 text-white shadow-sm"
+                    : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50"
+                }`}
+              >
+                {format.label}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Fixture context pill (if any) */}
-        {fixtureContext && (
-          <div className="px-4 pt-2">
-            <div className="flex items-start gap-2 rounded-2xl border border-purple-100 bg-purple-50 px-3 py-2.5 text-xs text-purple-900">
-              <Info className="w-4 h-4 mt-[2px] text-purple-700 shrink-0" />
-              <div className="flex-1">
-                <p className="font-semibold">
-                  Linked Fixture #
-                  {String(fixtureContext.fixtureId).slice(0, 8)}
-                </p>
-                <p className="mt-0.5">
-                  {fixtureContext.teamA || "Home"} vs{" "}
-                  {fixtureContext.teamB || "Away"}
-                  {fixtureContext.venue && ` · ${fixtureContext.venue}`}
-                </p>
-              </div>
+        {matchFormat === "custom" && (
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium text-slate-700 flex items-center gap-1">
+                <Users className="w-4 h-4" />
+                Players/Team
+              </label>
+              <input
+                type="number"
+                placeholder="e.g. 6"
+                value={playersPerTeam}
+                onChange={(e) => setPlayersPerTeam(e.target.value)}
+                min={1}
+                max={22}
+                className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium text-slate-700 flex items-center gap-1">
+                <Clock className="w-4 h-4" />
+                Duration (min)
+              </label>
+              <input
+                type="number"
+                placeholder="e.g. 50"
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+                className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-purple-500"
+              />
             </div>
           </div>
         )}
 
-        {/* Form */}
-        <form
-          onSubmit={handleSubmit}
-          className="px-4 pt-3 space-y-5 flex-1 overflow-y-auto"
+        <div className="space-y-1.5">
+          <label className="text-sm font-medium text-slate-700 flex items-center gap-1">
+            <MapPin className="w-4 h-4" />
+            Venue (optional)
+          </label>
+          <input
+            type="text"
+            placeholder="Stadium or ground name"
+            value={venue}
+            onChange={(e) => setVenue(e.target.value)}
+            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-purple-500"
+          />
+        </div>
+
+        <button
+          type="submit"
+          disabled={!isFormValid}
+          className="w-full flex items-center justify-center gap-2 bg-purple-600 text-white rounded-xl py-4 text-sm font-semibold hover:bg-purple-700 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-purple-500/25"
         >
-          {sameTeamError && (
-            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-2.5 rounded-2xl text-xs">
-              {sameTeamError}
-            </div>
-          )}
-
-          {/* Teams */}
-          <div className="space-y-3">
-            <div className="space-y-1.5">
-              <label className="text-[11px] font-medium text-slate-600 px-1">
-                Home Team
-              </label>
-              <TeamAutocomplete
-                value={team1}
-                onChange={handleTeam1Change}
-                onAddTeam={() => setShowAddTeam(true)}
-                placeholder="Search or add home team"
-                teamsList={availableTeams}
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="text-[11px] font-medium text-slate-600 px-1">
-                Away Team
-              </label>
-              <TeamAutocomplete
-                value={team2}
-                onChange={handleTeam2Change}
-                onAddTeam={() => setShowAddTeam(true)}
-                placeholder="Search or add away team"
-                teamsList={availableTeams}
-              />
-            </div>
-
-            <p className="text-[11px] text-slate-500 px-1">
-              Use{" "}
-              <span className="font-medium text-purple-600">Add Team</span> if
-              your squad isn&apos;t registered yet.
-            </p>
-
-            {loadingTeams && availableTeams.length === 0 && (
-              <p className="text-[10px] text-slate-400 px-1">
-                Loading teams from VScor…
-              </p>
-            )}
-          </div>
-
-          {/* Match format */}
-          <div className="space-y-1.5">
-            <label className="text-[11px] font-medium text-slate-600 px-1">
-              Match format
-            </label>
-            <Select
-              value={matchFormat}
-              onValueChange={(val: string) => setMatchFormat(val)}
-            >
-              <SelectTrigger className="w-full rounded-2xl border border-slate-200 h-11 text-sm px-3">
-                <SelectValue placeholder="Select format" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="single">Single match</SelectItem>
-                <SelectItem value="league">League game</SelectItem>
-                <SelectItem value="knockout">Knockout</SelectItem>
-                <SelectItem value="friendly">Friendly</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Duration */}
-          <div className="space-y-1.5">
-            <label className="text-[11px] font-medium text-slate-600 px-1">
-              Duration (minutes)
-            </label>
-            <Input
-              type="number"
-              placeholder="e.g. 90"
-              value={duration}
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setDuration(e.target.value)
-              }
-              className="py-3.5 border border-slate-200 rounded-2xl text-sm"
-            />
-            <p className="text-[10px] text-slate-400 px-1">
-              You can use 60, 30 etc. for shorter formats.
-            </p>
-          </div>
-
-          {/* Venue */}
-          <div className="space-y-1.5">
-            <label className="text-[11px] font-medium text-slate-600 px-1">
-              Venue (optional)
-            </label>
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <Input
-                placeholder="Ground / pitch name"
-                value={venue}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setVenue(e.target.value)
-                }
-                className="pl-10 py-3.5 border border-slate-200 rounded-2xl text-sm"
-              />
-            </div>
-          </div>
-
-          {/* Players per team */}
-          <div className="space-y-1.5">
-            <label className="text-[11px] font-medium text-slate-600 px-1">
-              Players per team
-            </label>
-            <Input
-              type="number"
-              placeholder="e.g. 7 or 11"
-              value={playersPerTeam}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                const value = e.target.value;
-                const asNum = parseInt(value, 10);
-                if (Number.isNaN(asNum)) {
-                  setPlayersPerTeam(value);
-                  return;
-                }
-                if (asNum < 1) return;
-                if (asNum > 22) return;
-                setPlayersPerTeam(value);
-              }}
-              className="py-3.5 border border-slate-200 rounded-2xl text-sm"
-            />
-          </div>
-
-          {/* CTA */}
-          <div className="pt-1 pb-6">
-            <Button
-              type="submit"
-              className="w-full py-3.5 bg-purple-600 hover:bg-purple-700 text-white rounded-2xl text-sm font-semibold"
-              disabled={!isFormValid}
-            >
-              Select Squad
-            </Button>
-          </div>
-        </form>
-      </div>
+          Select Squad
+          <ChevronDown className="w-4 h-4 rotate-[-90deg]" />
+        </button>
+      </form>
     </div>
   );
 };

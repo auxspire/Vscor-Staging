@@ -128,42 +128,26 @@ const TeamManagement: React.FC<TeamManagementProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
-      <div className="p-6 space-y-6 pb-28">
-        {/* Header */}
-        <div className="flex items-center gap-4 mb-2">
-          <button
-            onClick={() => onBack()}
-            className="p-2 rounded-full hover:bg-slate-800"
-          >
-            <ArrowLeft className="w-6 h-6" />
-          </button>
-          <div>
-            <h1 className="text-2xl font-semibold">Teams</h1>
-            <p className="text-xs text-slate-300">
-              Manage teams and assign players from your player pool.
-            </p>
-          </div>
-        </div>
-
+    <div className="bg-white text-slate-900">
+      <div className="px-4 py-5 space-y-5 pb-28">
         {/* Top stats / overview */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-slate-800 rounded-2xl p-4 flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-purple-600 flex items-center justify-center">
+          <div className="bg-purple-100 rounded-2xl p-4 flex items-center gap-3">
+            <div className="w-9 h-9 rounded-full bg-purple-600 flex items-center justify-center text-white">
               <Users className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-xs text-slate-300">Total Teams</p>
-              <p className="text-lg font-semibold">{teams.length}</p>
+              <p className="text-xs text-slate-500">Total Teams</p>
+              <p className="text-lg font-semibold text-slate-900">{teams.length}</p>
             </div>
           </div>
-          <div className="bg-slate-800 rounded-2xl p-4 flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-slate-700 flex items-center justify-center">
-              <span className="text-sm font-bold">P</span>
+          <div className="bg-slate-100 rounded-2xl p-4 flex items-center gap-3">
+            <div className="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center">
+              <span className="text-sm font-bold text-slate-700">P</span>
             </div>
             <div>
-              <p className="text-xs text-slate-300">Players in Teams</p>
-              <p className="text-lg font-semibold">
+              <p className="text-xs text-slate-500">Players in Teams</p>
+              <p className="text-lg font-semibold text-slate-900">
                 {players.filter((p) => p.teamId != null).length}
               </p>
             </div>
@@ -172,20 +156,20 @@ const TeamManagement: React.FC<TeamManagementProps> = ({
 
         {/* Search Teams */}
         <div className="space-y-2">
-          <label className="text-xs font-medium text-slate-300 px-1">
+          <label className="text-xs font-medium text-slate-600 px-1">
             Search Teams
           </label>
           <Input
             placeholder="Search by team name"
             value={teamSearch}
             onChange={handleTeamSearchChange}
-            className="bg-slate-800 border-slate-700 text-sm"
+            className="bg-white border-slate-200 text-sm"
           />
         </div>
 
         {/* Team list */}
         {filteredTeams.length === 0 ? (
-          <div className="bg-slate-800 rounded-2xl p-4 text-sm text-slate-300">
+          <div className="bg-slate-100 rounded-2xl p-4 text-sm text-slate-600">
             No teams created yet. Use the New Match screen to add a team while
             creating a match.
           </div>
@@ -202,11 +186,11 @@ const TeamManagement: React.FC<TeamManagementProps> = ({
                 <AccordionItem
                   key={team.id}
                   value={key}
-                  className="overflow-hidden rounded-2xl bg-slate-800 border border-slate-700"
+                  className="overflow-hidden rounded-2xl bg-white border border-slate-200"
                 >
                   <AccordionTrigger className="px-4 py-3">
                     <div className="flex-1 flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-purple-600 flex items-center justify-center">
+                      <div className="w-9 h-9 rounded-full bg-purple-600 flex items-center justify-center text-white">
                         <span className="font-bold text-sm">
                           {team.name.slice(0, 2).toUpperCase()}
                         </span>
@@ -219,13 +203,13 @@ const TeamManagement: React.FC<TeamManagementProps> = ({
                             onChange={(
                               e: ChangeEvent<HTMLInputElement>
                             ) => setEditingTeamName(e.target.value)}
-                            className="bg-slate-900 border-slate-600 text-sm h-8"
+                            className="bg-white border-slate-200 text-sm h-8"
                             autoFocus
                           />
                         ) : (
-                          <p className="font-medium text-sm">{team.name}</p>
+                          <p className="font-medium text-sm text-slate-900">{team.name}</p>
                         )}
-                        <p className="text-[11px] text-slate-400 mt-0.5">
+                        <p className="text-[11px] text-slate-500 mt-0.5">
                           {playerCount}{" "}
                           {playerCount === 1 ? "player" : "players"} assigned
                         </p>
@@ -238,7 +222,7 @@ const TeamManagement: React.FC<TeamManagementProps> = ({
                           <Button
                             size="icon"
                             variant="ghost"
-                            className="h-7 w-7 text-emerald-400 hover:text-emerald-300"
+                            className="h-7 w-7 text-emerald-600 hover:text-emerald-700"
                             onClick={(
                               e: ReactMouseEvent<HTMLButtonElement>
                             ) => {
@@ -251,7 +235,7 @@ const TeamManagement: React.FC<TeamManagementProps> = ({
                           <Button
                             size="icon"
                             variant="ghost"
-                            className="h-7 w-7 text-slate-400 hover:text-slate-200"
+                            className="h-7 w-7 text-slate-500 hover:text-slate-700"
                             onClick={(
                               e: ReactMouseEvent<HTMLButtonElement>
                             ) => {
@@ -267,7 +251,7 @@ const TeamManagement: React.FC<TeamManagementProps> = ({
                           <Button
                             size="icon"
                             variant="ghost"
-                            className="h-7 w-7 text-slate-300 hover:text-white"
+                            className="h-7 w-7 text-slate-500 hover:text-purple-600"
                             onClick={(
                               e: ReactMouseEvent<HTMLButtonElement>
                             ) => {
@@ -280,7 +264,7 @@ const TeamManagement: React.FC<TeamManagementProps> = ({
                           <Button
                             size="icon"
                             variant="ghost"
-                            className="h-7 w-7 text-red-400 hover:text-red-300"
+                            className="h-7 w-7 text-red-500 hover:text-red-600"
                             onClick={(
                               e: ReactMouseEvent<HTMLButtonElement>
                             ) => {
@@ -301,11 +285,11 @@ const TeamManagement: React.FC<TeamManagementProps> = ({
                     </div>
                   </AccordionTrigger>
 
-                  <AccordionContent className="bg-slate-900/70">
+                  <AccordionContent className="bg-slate-50">
                     <div className="px-4 pb-4 pt-1 space-y-4">
                       {/* Assign player to this team */}
                       <div className="space-y-2">
-                        <p className="text-xs text-slate-300 px-1">
+                        <p className="text-xs text-slate-600 px-1">
                           Assign player to {team.name}
                         </p>
                         {unassignedPlayers.length === 0 ? (
@@ -323,7 +307,7 @@ const TeamManagement: React.FC<TeamManagementProps> = ({
                               onAssignPlayerToTeam(player.id, team.id);
                             }}
                           >
-                            <SelectTrigger className="bg-slate-900 border-slate-700 text-xs h-9">
+                            <SelectTrigger className="bg-white border-slate-200 text-xs h-9">
                               <SelectValue placeholder="Select player to assign" />
                             </SelectTrigger>
                             <SelectContent>
@@ -342,7 +326,7 @@ const TeamManagement: React.FC<TeamManagementProps> = ({
 
                       {/* Players in team */}
                       <div className="space-y-2">
-                        <p className="text-xs text-slate-300 px-1">
+                        <p className="text-xs text-slate-600 px-1">
                           Players in {team.name}
                         </p>
                         {teamPlayers.length === 0 ? (
@@ -355,17 +339,17 @@ const TeamManagement: React.FC<TeamManagementProps> = ({
                             {teamPlayers.map((player) => (
                               <div
                                 key={player.id}
-                                className="flex items-center justify-between bg-slate-800 rounded-xl px-3 py-2"
+                                className="flex items-center justify-between bg-white border border-slate-200 rounded-xl px-3 py-2"
                               >
                                 <div className="flex items-center gap-3">
-                                  <div className="w-8 h-8 rounded-full bg-purple-700 flex items-center justify-center text-xs font-semibold">
+                                  <div className="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center text-xs font-semibold">
                                     {player.jerseyNumber ?? "-"}
                                   </div>
                                   <div>
-                                    <p className="text-xs font-medium">
+                                    <p className="text-xs font-medium text-slate-900">
                                       {player.name}
                                     </p>
-                                    <p className="text-[11px] text-slate-400">
+                                    <p className="text-[11px] text-slate-500">
                                       ID: {String(player.id).slice(0, 8)}
                                     </p>
                                   </div>
@@ -373,7 +357,7 @@ const TeamManagement: React.FC<TeamManagementProps> = ({
                                 <Button
                                   size="icon"
                                   variant="ghost"
-                                  className="h-7 w-7 text-slate-300 hover:text-amber-300"
+                                  className="h-7 w-7 text-slate-500 hover:text-amber-500"
                                   onClick={(
                                     e: ReactMouseEvent<HTMLButtonElement>
                                   ) => {
@@ -399,10 +383,10 @@ const TeamManagement: React.FC<TeamManagementProps> = ({
         {/* Unassigned players panel */}
         <div className="mt-6 space-y-2">
           <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold text-slate-200">
+            <p className="text-xs font-semibold text-slate-700">
               Unassigned Players
             </p>
-            <span className="text-[11px] text-slate-400">
+            <span className="text-[11px] text-slate-500">
               {unassignedPlayers.length} total
             </span>
           </div>
@@ -411,11 +395,11 @@ const TeamManagement: React.FC<TeamManagementProps> = ({
             placeholder="Search unassigned players"
             value={playerSearch}
             onChange={handlePlayerSearchChange}
-            className="bg-slate-800 border-slate-700 text-sm"
+            className="bg-white border-slate-200 text-sm"
           />
 
           {filteredUnassignedPlayers.length === 0 ? (
-            <div className="bg-slate-800 rounded-2xl p-3 text-[11px] text-slate-400">
+            <div className="bg-slate-100 rounded-2xl p-3 text-[11px] text-slate-500">
               No unassigned players match this search.
             </div>
           ) : (
@@ -423,15 +407,15 @@ const TeamManagement: React.FC<TeamManagementProps> = ({
               {filteredUnassignedPlayers.map((player) => (
                 <div
                   key={player.id}
-                  className="flex items-center justify-between bg-slate-800 rounded-xl px-3 py-2"
+                  className="flex items-center justify-between bg-slate-100 rounded-xl px-3 py-2"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs font-semibold">
+                    <div className="w-8 h-8 rounded-full bg-slate-300 text-slate-700 flex items-center justify-center text-xs font-semibold">
                       {player.jerseyNumber ?? "-"}
                     </div>
                     <div>
-                      <p className="text-xs font-medium">{player.name}</p>
-                      <p className="text-[11px] text-slate-400">
+                      <p className="text-xs font-medium text-slate-900">{player.name}</p>
+                      <p className="text-[11px] text-slate-500">
                         ID: {String(player.id).slice(0, 8)}
                       </p>
                     </div>

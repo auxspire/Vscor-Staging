@@ -583,15 +583,7 @@ const MatchEventsScreen: React.FC<MatchEventsScreenProps> = ({
   };
 
   return (
-    <div className="p-6 space-y-6 pb-24">
-      {/* Header */}
-      <div className="flex items-center gap-4">
-        <button onClick={onBack} className="p-2">
-          <ArrowLeft className="w-6 h-6" />
-        </button>
-        <h1 className="text-xl font-medium">Match Events</h1>
-      </div>
-
+    <div className="px-4 py-5 space-y-5 pb-24">
       {/* Match Header */}
       <div className="bg-purple-100 rounded-2xl p-6">
         <div className="text-center mb-4">

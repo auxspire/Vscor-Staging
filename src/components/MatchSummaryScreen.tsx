@@ -143,15 +143,7 @@ const MatchSummaryScreen: React.FC<Props> = ({ data, onBack }) => {
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
-      {/* Header */}
-      <div className="bg-slate-900 px-4 pt-6 pb-4 flex items-center gap-4">
-        <button onClick={onBack} className="p-2 rounded-full hover:bg-slate-800">
-          <ArrowLeft className="w-6 h-6" />
-        </button>
-        <h1 className="text-xl font-semibold">Match Summary</h1>
-      </div>
-
-      <div className="px-4 pb-32 space-y-6">
+      <div className="px-4 py-5 pb-32 space-y-5">
         {/* Score Card */}
         <div className="bg-purple-600 rounded-2xl p-6 space-y-4 shadow-lg">
           <div className="flex items-center justify-between">

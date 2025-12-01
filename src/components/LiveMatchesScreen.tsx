@@ -1,17 +1,7 @@
-// src/components/LiveMatchesScreen.tsx
 import React, { useState, useEffect } from "react";
-import { Search, Filter, Calendar, MapPin } from "lucide-react";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
-import { Badge } from "./ui/badge";
+import { Search, Filter, Calendar, Clock, Radio, ChevronRight } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
-import type {
-  TeamClickPayload,
-  TournamentClickPayload,
-} from "../lib/matches";
-import { VSSection, VSMatchCard } from "./ui/vscor-ui";
-
-// ---- Types ----
+import type { TeamClickPayload, TournamentClickPayload } from "../lib/matches";
 
 type LiveMatch = {
   id: string | number;
@@ -49,28 +39,11 @@ const LiveMatchesScreen: React.FC<LiveMatchesScreenProps> = ({
   const [matches, setMatches] = useState<LiveMatch[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-
-  // ---- Helpers to map DB rows → UI shape ----
+  const [filter, setFilter] = useState<"all" | "live" | "finished">("all");
 
   const mapMatchRow = (row: any): LiveMatch => {
-    const teamA =
-      row.home_team_name ??
-      row.teamA ??
-      row.team_a_name ??
-      row.team_a ??
-      row.home_team ??
-      row.team1 ??
-      "Team A";
-
-    const teamB =
-      row.away_team_name ??
-      row.teamB ??
-      row.team_b_name ??
-      row.team_b ??
-      row.away_team ??
-      row.team2 ??
-      "Team B";
-
+    const teamA = row.home_team_name ?? row.teamA ?? row.team_a_name ?? row.home_team ?? row.team1 ?? "Team A";
+    const teamB = row.away_team_name ?? row.teamB ?? row.team_b_name ?? row.away_team ?? row.team2 ?? "Team B";
     const scoreA = row.scoreA ?? row.score_a ?? row.home_score ?? 0;
     const scoreB = row.scoreB ?? row.score_b ?? row.away_score ?? 0;
 
@@ -78,22 +51,11 @@ const LiveMatchesScreen: React.FC<LiveMatchesScreenProps> = ({
     let status: LiveMatch["status"] = "other";
 
     if (rawStatus === "live" || row.is_live) status = "live";
-    else if (
-      rawStatus === "finished" ||
-      rawStatus === "ft" ||
-      row.is_finished
-    )
-      status = "finished";
-    else if (rawStatus === "upcoming" || rawStatus === "scheduled")
-      status = "upcoming";
+    else if (rawStatus === "finished" || rawStatus === "ft" || row.is_finished) status = "finished";
+    else if (rawStatus === "upcoming" || rawStatus === "scheduled") status = "upcoming";
 
-    const tournament =
-      row.tournament_name ??
-      row.tournament ??
-      row.competition_name ??
-      "Tournament";
-
-    const venue = row.venue ?? row.stadium ?? "Venue";
+    const tournament = row.tournament_name ?? row.tournament ?? row.competition_name ?? "Friendly";
+    const venue = row.venue ?? row.stadium ?? "";
 
     return {
       id: row.id,
@@ -109,35 +71,6 @@ const LiveMatchesScreen: React.FC<LiveMatchesScreenProps> = ({
       recentEvents: [],
     };
   };
-
-  const mapEventRow = (row: any) => {
-    let minute = 0;
-    if (typeof row.minute === "number") {
-      minute = row.minute;
-    } else if (typeof row.minute === "string") {
-      const parsed = parseInt(row.minute, 10);
-      minute = Number.isNaN(parsed) ? 0 : parsed;
-    } else if (typeof row.minute_mark === "number") {
-      minute = row.minute_mark;
-    } else if (typeof row.time === "string") {
-      const m = parseInt(row.time.split(":")[0], 10);
-      minute = Number.isNaN(m) ? 0 : m;
-    }
-
-    const type: string = row.event_type || row.type || "event";
-    const player: string | null = row.player_name ?? row.player ?? null;
-    const team: string | null =
-      row.team_name ?? row.team ?? row.team_side_name ?? null;
-
-    return {
-      minute,
-      type,
-      player,
-      team,
-    };
-  };
-
-  // ---- Load matches + recent events from Supabase ----
 
   const loadMatches = async () => {
     try {
@@ -157,43 +90,6 @@ const LiveMatchesScreen: React.FC<LiveMatchesScreenProps> = ({
       }
 
       const mappedMatches: LiveMatch[] = (matchRows ?? []).map(mapMatchRow);
-
-      const matchIds = (matchRows ?? []).map((r: any) => r.id);
-      if (matchIds.length > 0) {
-        const { data: eventRows, error: eventsError } = await supabase
-          .from("match_events")
-          .select("*")
-          .in("match_id", matchIds)
-          .order("minute", { ascending: false });
-
-        if (eventsError) {
-          console.warn(
-            "[LiveMatchesScreen] match_events error (non-fatal)",
-            eventsError
-          );
-        } else if (eventRows) {
-          const eventsByMatchId: Record<
-            string | number,
-            ReturnType<typeof mapEventRow>[]
-          > = {};
-          for (const row of eventRows) {
-            const ev = mapEventRow(row);
-            const key: string | number = row.match_id;
-            if (!eventsByMatchId[key]) eventsByMatchId[key] = [];
-            eventsByMatchId[key].push(ev);
-          }
-
-          for (let i = 0; i < mappedMatches.length; i++) {
-            const m = mappedMatches[i];
-            const evs = eventsByMatchId[m.id] || [];
-            mappedMatches[i] = {
-              ...m,
-              recentEvents: evs.slice(0, 2),
-            };
-          }
-        }
-      }
-
       setMatches(mappedMatches);
     } catch (e: any) {
       console.error("[LiveMatchesScreen] unexpected error", e);
@@ -207,204 +103,186 @@ const LiveMatchesScreen: React.FC<LiveMatchesScreenProps> = ({
   useEffect(() => {
     loadMatches();
   }, []);
-const visibleMatches = matches.filter((match) => match.status === "live");
-const filteredMatches = visibleMatches.filter((match) =>
-  match.teamA.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  match.teamB.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  match.tournament.toLowerCase().includes(searchQuery.toLowerCase())
-);
-  const handleTeamNameClick = (
-    e: React.MouseEvent<HTMLButtonElement>,
-    teamName: string
-  ) => {
-    e.stopPropagation();
-    onTeamClick?.({
-      id: teamName === "Manchester United" ? 1 : 2,
-      name: teamName,
-      matches: 28,
-      wins: 18,
-      goals: 58,
-    });
-  };
 
-  const handleTournamentNameClick = (
-    e: React.MouseEvent<HTMLButtonElement>,
-    tournamentName: string
-  ) => {
-    e.stopPropagation();
-    onTournamentClick?.({
-      id: 1,
-      name: tournamentName,
-      teams: 20,
-      matches: 380,
-    });
-  };
-
-  const getStatusTone = (m: LiveMatch) =>
-    m.status === "live"
-      ? "live"
-      : m.status === "upcoming"
-      ? "upcoming"
-      : "finished";
-
-  const renderMetaLine = (match: LiveMatch) => {
-    const bits: string[] = [];
-    if (match.venue) bits.push(match.venue);
-    if (match.spectators !== null)
-      bits.push(`${match.spectators.toLocaleString()} spectators`);
-    return bits.join(" • ") || null;
-  };
-
-  const renderRecentEvents = (match: LiveMatch) => {
-    if (!match.recentEvents.length) return null;
-    return (
-      <div className="mt-3 pt-3 border-t border-slate-800">
-        <p className="text-[11px] text-slate-400 mb-1">Recent events</p>
-        <div className="flex gap-2 flex-wrap">
-          {match.recentEvents.map((event, index) => (
-            <div
-              key={index}
-              className="text-[11px] bg-slate-900/80 border border-slate-700 rounded-lg px-2 py-1 text-slate-100"
-            >
-              <span className="font-semibold">{event.minute}&apos;</span>{" "}
-              {event.type}
-              {event.player ? ` · ${event.player}` : ""}
-            </div>
-          ))}
-        </div>
-      </div>
+  const filteredMatches = matches
+    .filter((match) => {
+      if (filter === "live") return match.status === "live";
+      if (filter === "finished") return match.status === "finished";
+      return true;
+    })
+    .filter(
+      (match) =>
+        match.teamA.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        match.teamB.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        match.tournament.toLowerCase().includes(searchQuery.toLowerCase())
     );
-  };
+
+  const liveCount = matches.filter((m) => m.status === "live").length;
 
   return (
-    <div className="pb-2">
-      {/* Header */}
-      <div className="mb-4 px-1">
-        <h1 className="text-xl font-semibold text-slate-50 mb-1">
-          Live Matches
-        </h1>
-        <p className="text-sm text-purple-300">
-          Stay updated with real-time scores and key events.
-        </p>
+    <div className="px-4 py-5 space-y-5">
+      <div>
+        <div className="flex items-center gap-2 mb-1">
+          <Radio className="w-4 h-4 text-red-500" />
+          <span className="text-xs font-medium text-red-600 uppercase tracking-wide">Live Centre</span>
+        </div>
+        <p className="text-sm text-slate-500">Real-time scores and match updates</p>
       </div>
 
-      {/* Search & Filter */}
-      <div className="space-y-3 mb-4">
-        <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-          <Input
-            placeholder="Search teams, tournaments..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 pr-4 py-2.5 bg-slate-900/80 border border-slate-700 rounded-full text-sm text-slate-100 placeholder:text-slate-500"
-          />
-        </div>
-        <Button
-          variant="outline"
-          className="rounded-full px-4 py-1.5 border-slate-700 text-slate-100 bg-transparent hover:bg-slate-900"
-        >
-          <Filter className="w-4 h-4 mr-2" />
-          Filter matches
-        </Button>
+      <div className="relative">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+        <input
+          type="text"
+          placeholder="Search teams, tournaments..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+        />
+      </div>
+
+      <div className="flex gap-2">
+        <FilterButton active={filter === "all"} onClick={() => setFilter("all")}>
+          All Matches
+        </FilterButton>
+        <FilterButton active={filter === "live"} onClick={() => setFilter("live")} badge={liveCount > 0 ? liveCount : undefined}>
+          Live
+        </FilterButton>
+        <FilterButton active={filter === "finished"} onClick={() => setFilter("finished")}>
+          Finished
+        </FilterButton>
       </div>
 
       {error && (
-        <div className="text-sm text-red-400 bg-red-900/40 border border-red-700 rounded-lg px-3 py-2 mb-3">
+        <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3">
+          <div className="w-2 h-2 rounded-full bg-red-500" />
           {error}
         </div>
       )}
 
       {loading && matches.length === 0 && (
-        <div className="text-center text-sm text-slate-400 py-6">
-          Loading matches…
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin w-6 h-6 border-2 border-purple-600 border-t-transparent rounded-full" />
         </div>
       )}
-
-      <VSSection
-        title="All matches"
-        subtitle={
-          filteredMatches.length
-            ? "Tap a card to open full match events"
-            : "No matches found for your search"
-        }
-      >
-        <div className="space-y-3">
-          {filteredMatches.map((match) => (
-            <div
-              key={match.id}
-              onClick={() => onMatchClick(match)}
-              className="cursor-pointer"
-            >
-              <VSMatchCard
-                teamA={match.teamA}
-                teamB={match.teamB}
-                scoreA={match.scoreA}
-                scoreB={match.scoreB}
-                tournamentName={match.tournament}
-                statusTone={getStatusTone(match) as any}
-                statusLabel={match.time || undefined}
-                metaLine={renderMetaLine(match)}
-                onClick={() => onMatchClick(match)}
-                rightSlot={
-                  match.status === "live" ? (
-                    <Badge className="bg-red-500 text-white animate-pulse text-[10px]">
-                      {match.time || "Live"}
-                    </Badge>
-                  ) : (
-                    <Badge
-                      variant="outline"
-                      className="bg-slate-900/80 border-slate-700 text-slate-200 text-[10px]"
-                    >
-                      {match.time || "Final"}
-                    </Badge>
-                  )
-                }
-              />
-              {/* Tournament + Team CTAs below card */}
-              <div className="flex items-center justify-between mt-1.5 px-1 text-[11px] text-slate-400">
-                <button
-                  onClick={(e) =>
-                    handleTournamentNameClick(e, match.tournament)
-                  }
-                  className="hover:text-purple-300 hover:underline flex items-center gap-1"
-                >
-                  <Calendar className="w-3 h-3" />
-                  <span>{match.tournament}</span>
-                </button>
-                <div className="flex gap-3">
-                  <button
-                    onClick={(e) => handleTeamNameClick(e, match.teamA)}
-                    className="hover:text-purple-300 hover:underline"
-                  >
-                    {match.teamA}
-                  </button>
-                  <span className="text-slate-600">vs</span>
-                  <button
-                    onClick={(e) => handleTeamNameClick(e, match.teamB)}
-                    className="hover:text-purple-300 hover:underline"
-                  >
-                    {match.teamB}
-                  </button>
-                </div>
-              </div>
-              {renderRecentEvents(match)}
-            </div>
-          ))}
-        </div>
-      </VSSection>
 
       {!loading && filteredMatches.length === 0 && (
-        <div className="text-center py-10">
-          <Calendar className="w-12 h-12 mx-auto mb-3 text-slate-500" />
-          <h3 className="text-sm font-medium text-slate-200 mb-1">
-            No matches found
-          </h3>
-          <p className="text-xs text-slate-500">
-            Try adjusting your search or check back later.
-          </p>
+        <div className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl p-8 text-center">
+          <Calendar className="w-12 h-12 mx-auto mb-3 text-slate-400" />
+          <p className="text-sm font-medium text-slate-700 mb-1">No matches found</p>
+          <p className="text-xs text-slate-500">Try adjusting your search or filters</p>
         </div>
       )}
+
+      <div className="space-y-3">
+        {filteredMatches.map((match) => (
+          <LiveMatchCard key={match.id} match={match} onClick={() => onMatchClick(match)} />
+        ))}
+      </div>
     </div>
+  );
+};
+
+type FilterButtonProps = {
+  active: boolean;
+  onClick: () => void;
+  badge?: number;
+  children: React.ReactNode;
+};
+
+const FilterButton: React.FC<FilterButtonProps> = ({ active, onClick, badge, children }) => (
+  <button
+    onClick={onClick}
+    className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2 ${
+      active
+        ? "bg-purple-600 text-white shadow-sm"
+        : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
+    }`}
+  >
+    {children}
+    {badge !== undefined && (
+      <span className={`px-1.5 py-0.5 text-xs rounded-full ${active ? "bg-white/20 text-white" : "bg-red-500 text-white"}`}>
+        {badge}
+      </span>
+    )}
+  </button>
+);
+
+type LiveMatchCardProps = {
+  match: LiveMatch;
+  onClick: () => void;
+};
+
+const LiveMatchCard: React.FC<LiveMatchCardProps> = ({ match, onClick }) => {
+  const isLive = match.status === "live";
+
+  return (
+    <button
+      onClick={onClick}
+      className="w-full bg-white rounded-2xl border border-slate-200 overflow-hidden transition-all active:scale-[0.98] hover:border-purple-200 hover:shadow-md"
+    >
+      {isLive && (
+        <div className="bg-gradient-to-r from-red-500 to-rose-500 px-4 py-1.5 flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+          <span className="text-xs font-semibold text-white uppercase tracking-wide">Live Now</span>
+          {match.time && <span className="text-xs text-white/80 ml-auto">{match.time}</span>}
+        </div>
+      )}
+
+      <div className="p-4">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex-1">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-sm font-bold text-slate-700">
+                {match.teamA.charAt(0)}
+              </div>
+              <div className="text-left">
+                <p className="text-sm font-semibold text-slate-900">{match.teamA}</p>
+                <p className="text-xs text-slate-500">Home</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="px-4 py-2 bg-slate-50 rounded-xl text-center min-w-[80px]">
+            <p className="text-xl font-bold text-slate-900">
+              {match.scoreA} - {match.scoreB}
+            </p>
+            {!isLive && (
+              <p className="text-[10px] uppercase text-slate-500 font-medium">{match.status === "finished" ? "Final" : match.status}</p>
+            )}
+          </div>
+
+          <div className="flex-1">
+            <div className="flex items-center gap-3 justify-end">
+              <div className="text-right">
+                <p className="text-sm font-semibold text-slate-900">{match.teamB}</p>
+                <p className="text-xs text-slate-500">Away</p>
+              </div>
+              <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-sm font-bold text-slate-700">
+                {match.teamB.charAt(0)}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+          <div className="flex items-center gap-4 text-xs text-slate-500">
+            {match.tournament && (
+              <span className="flex items-center gap-1">
+                <Calendar className="w-3 h-3" />
+                {match.tournament}
+              </span>
+            )}
+            {match.venue && (
+              <span className="flex items-center gap-1">
+                <Clock className="w-3 h-3" />
+                {match.venue}
+              </span>
+            )}
+          </div>
+          <ChevronRight className="w-4 h-4 text-slate-400" />
+        </div>
+      </div>
+    </button>
   );
 };
 

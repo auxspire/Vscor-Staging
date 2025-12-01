@@ -247,15 +247,8 @@ const AddPlayer: React.FC<AddPlayerProps> = ({
   };
 
   return (
-    <div className="p-6 space-y-6 pb-24">
-      <div className="flex items-center gap-4">
-        <button onClick={onBack} className="p-2">
-          <ArrowLeft className="w-6 h-6" />
-        </button>
-        <h1 className="text-2xl font-medium">Add Player</h1>
-      </div>
-
-      <div className="space-y-6">
+    <div className="px-4 py-5 space-y-5 pb-24">
+      <div className="space-y-5">
         {/* Primary Fields */}
         <div className="space-y-4 pb-4 border-b-2 border-purple-100">
           <div>

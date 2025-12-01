@@ -281,17 +281,9 @@ const TournamentProfileScreen: React.FC<TournamentProfileScreenProps> = ({
   };
 
   return (
-    <div className="p-6 space-y-6 pb-24 bg-slate-900 text-slate-50">
-      {/* Header */}
-      <div className="flex items-center gap-4">
-        <button onClick={onBack} className="p-2">
-          <ArrowLeft className="w-6 h-6" />
-        </button>
-        <h1 className="text-xl font-medium">Tournament Profile</h1>
-      </div>
-
+    <div className="px-4 py-5 space-y-5 pb-24 bg-white text-slate-900">
       {/* Tournament Header */}
-      <div className="bg-slate-800 rounded-2xl p-6 border border-slate-700">
+      <div className="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-2xl p-5 text-white">
         <div className="flex items-center gap-6">
           {/* Tournament Logo */}
           <div className="w-20 h-20 bg-purple-600 rounded-full flex items-center justify-center">

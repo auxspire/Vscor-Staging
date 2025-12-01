@@ -475,17 +475,8 @@ const LiveScoring: React.FC<LiveScoringProps> = ({
   const venueLabel = match.venue_name || "Match Venue";
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 p-4 flex items-center justify-between sticky top-0 z-10">
-        <button onClick={onBack} className="p-2">
-          <ArrowLeft className="w-6 h-6" />
-        </button>
-        <h1 className="font-medium">Live Scoring</h1>
-        <div className="w-10" />
-      </div>
-
-      <div className="p-4 space-y-4 pb-24">
+    <div className="pb-24">
+      <div className="px-4 py-5 space-y-4">
         {/* Timer and Match Info */}
         <div className="bg-purple-600 text-white rounded-2xl p-6 space-y-4">
           <div className="text-center">
