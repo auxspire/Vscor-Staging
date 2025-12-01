@@ -152,36 +152,36 @@ const MatchCard: React.FC<MatchCardProps> = ({ match, onClick }) => {
   return (
     <button
       onClick={onClick}
-      className="w-full bg-white rounded-3xl border border-slate-200 p-5 flex items-center gap-4 transition-all active:scale-[0.98] hover:border-purple-200 hover:shadow-lg shadow-sm"
+      className="w-full bg-white rounded-2xl border border-slate-200 p-4 flex items-center gap-3 transition-all active:scale-[0.98] hover:border-purple-200 hover:shadow-lg shadow-sm"
     >
-      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-base font-bold flex-shrink-0 ${
+      <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold flex-shrink-0 ${
         isLive ? "bg-green-100 text-green-700" : "bg-purple-100 text-purple-700"
       }`}>
         {match.teamA.charAt(0)}
       </div>
       
       <div className="flex-1 text-left min-w-0">
-        <p className="text-base font-bold text-slate-900 mb-1 truncate">
+        <p className="text-sm font-bold text-slate-900 truncate">
           {match.teamA} vs {match.teamB}
         </p>
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-slate-500 truncate">
+        <div className="flex items-center gap-2 mt-0.5">
+          <span className="text-xs text-slate-500 truncate">
             {match.tournamentName || "Match"}
           </span>
           {isLive && (
-            <span className="px-2.5 py-0.5 text-xs font-bold bg-green-100 text-green-700 rounded-full animate-pulse flex-shrink-0">
+            <span className="px-2 py-0.5 text-[10px] font-bold bg-green-100 text-green-700 rounded-full animate-pulse flex-shrink-0">
               LIVE
             </span>
           )}
         </div>
       </div>
       
-      <div className="ml-auto flex flex-col items-end min-w-[90px] flex-shrink-0">
-        <p className="text-2xl font-bold text-slate-900">
+      <div className="flex flex-col items-end flex-shrink-0">
+        <p className="text-xl font-bold text-slate-900 whitespace-nowrap">
           {match.scoreA} - {match.scoreB}
         </p>
-        <div className="flex items-center gap-1.5 text-sm text-slate-400 whitespace-nowrap">
-          <Clock className="w-3.5 h-3.5 flex-shrink-0" />
+        <div className="flex items-center gap-1 text-xs text-slate-400 whitespace-nowrap mt-0.5">
+          <Clock className="w-3 h-3 flex-shrink-0" />
           <span>{match.status || "Final"}</span>
         </div>
       </div>

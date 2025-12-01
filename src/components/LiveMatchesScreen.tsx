@@ -243,33 +243,33 @@ const LiveMatchCard: React.FC<LiveMatchCardProps> = ({ match, onClick }) => {
         </div>
       )}
 
-      <div className="p-5">
-        <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3">
-          <div className="flex items-center gap-3 text-left">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-50 border border-slate-200 flex items-center justify-center text-base font-bold text-slate-700 flex-shrink-0">
+      <div className="p-4">
+        <div className="flex items-center">
+          <div className="flex items-center gap-2 flex-1 min-w-0">
+            <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-sm font-bold text-slate-700 flex-shrink-0">
               {match.teamA.charAt(0)}
             </div>
             <div className="min-w-0">
               <p className="text-sm font-bold text-slate-900 truncate">{match.teamA}</p>
-              <p className="text-xs text-slate-500">Home</p>
+              <p className="text-xs text-slate-400">Home</p>
             </div>
           </div>
 
-          <div className="px-4 py-2 bg-slate-50 rounded-xl text-center flex-shrink-0">
-            <p className="text-xl font-bold text-slate-900 whitespace-nowrap">
+          <div className="px-3 py-1.5 bg-slate-50 rounded-lg text-center mx-2 flex-shrink-0">
+            <p className="text-lg font-bold text-slate-900 whitespace-nowrap">
               {match.scoreA} - {match.scoreB}
             </p>
             {!isLive && (
-              <p className="text-[10px] uppercase text-slate-500 font-semibold mt-0.5">{match.status === "finished" ? "Full Time" : match.status}</p>
+              <p className="text-[10px] uppercase text-slate-500 font-medium">{match.status === "finished" ? "Full Time" : match.status}</p>
             )}
           </div>
 
-          <div className="flex items-center gap-3 justify-end text-right">
-            <div className="min-w-0">
+          <div className="flex items-center gap-2 flex-1 min-w-0 justify-end">
+            <div className="min-w-0 text-right">
               <p className="text-sm font-bold text-slate-900 truncate">{match.teamB}</p>
-              <p className="text-xs text-slate-500">Away</p>
+              <p className="text-xs text-slate-400">Away</p>
             </div>
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-50 border border-slate-200 flex items-center justify-center text-base font-bold text-slate-700 flex-shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-sm font-bold text-slate-700 flex-shrink-0">
               {match.teamB.charAt(0)}
             </div>
           </div>
